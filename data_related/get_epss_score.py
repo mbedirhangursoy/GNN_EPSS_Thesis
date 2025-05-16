@@ -34,7 +34,7 @@ def request_epss_scores(): #requests epss scores
             print('hello')
             print(df.columns.tolist())
             for _, row in df.iterrows(): 
-                cve = row['index'] #
+                cve = row['index'] 
                 epss = row['epss']
 
                 if cve not in epss_dict or float(epss) > epss_dict[cve]:

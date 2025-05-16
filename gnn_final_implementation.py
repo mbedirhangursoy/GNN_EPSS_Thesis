@@ -3,10 +3,8 @@ from torch_geometric.data import HeteroData
 from sklearn.preprocessing import OneHotEncoder
 import numpy as np
 import json
-from data_related.get_epss_score import get_epss_scores
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import torch
 import torch.nn.functional as F
 from torch.nn import Linear
 from torch_geometric.nn import HeteroConv, GATConv
