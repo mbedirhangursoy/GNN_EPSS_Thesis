@@ -8,13 +8,16 @@ model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 print('getting epss scores')
 epss_scores = get_epss_scores(list(data_values.keys()), 'epss_score.csv')
-
-for each_score, values in zip(epss_scores, data_values.copy()): #remove data_values which do not have an EPSS score 
+data_values2 = data_values
+print(len(data_values))
+for each_score, values in zip(epss_scores, data_values2.keys()): #remove data_values which do not have an EPSS score 
     if each_score is None:
         epss_scores.remove(each_score)
         del data_values[values]
 
         print(f'removed the following EPSS and CVE-ID: {each_score}, {values}')
+
+print(len(data_values))
 
 target = torch.tensor(epss_scores, dtype=torch.float)
 
