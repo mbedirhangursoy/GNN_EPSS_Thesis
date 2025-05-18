@@ -33,7 +33,6 @@ class HeteroGNN(torch.nn.Module):
 #prepare the data
 with open('data_related/h_gnn_output.json') as data_values:
     data_values = json.load(data_values)
-
     labels = list(data_values.keys())
     attributes = ['basescore', 'baseseverity', 'confidentialityimpact', 'integrityimpact', 'vendor', 'description', 'cwe']
 
@@ -88,24 +87,7 @@ with open('data_related/h_gnn_output.json') as data_values:
         for attr in attributes:
             label_idx = label_ids[label_val]
 
-            if attr == 'description':
-                current_vec = np.array(data_values[label_val][attr])
-
-                matching = False
-                for existing_idx, existing_vec in description_vector_map.items():
-                    similarity = cosine_similarity([current_vec], [existing_vec])[0][0]
-                    if similarity >= threshold:
-                        attr_idx = existing_idx
-                        matching = True
-                        break
-
-                if not matching:
-                    attr_idx = desc_idx_counter
-                    description_vector_map[attr_idx] = current_vec
-                    desc_idx_counter += 1
-
-            else:
-                attr_idx = attr_ids[attr]
+            attr_idx = attr_ids[attr]
 
             edge_index[0].append(label_idx)
             edge_index[1].append(attr_idx)
