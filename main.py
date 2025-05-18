@@ -2,13 +2,15 @@ from gnn_final_implementation import *
 from data_related.get_epss_score import get_epss_scores
 
 
-
 model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
 
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 print('getting epss scores')
 epss_scores = get_epss_scores(list(data_values.keys()), 'epss_score.csv')
+
+for each_score, values in zip(epss_scores, data_values.keys()):
+    print(each_score, values)
 
 target = torch.tensor(epss_scores, dtype=torch.float)
 

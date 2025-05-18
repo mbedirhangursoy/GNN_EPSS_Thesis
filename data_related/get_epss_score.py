@@ -69,4 +69,3 @@ def get_epss_scores(cve_ids: list[str], file_location: str): #gets_all_scores
 
     return epss_scores_list
 
-
