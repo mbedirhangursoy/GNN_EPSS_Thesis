@@ -10,7 +10,7 @@ print('getting epss scores')
 epss_scores = get_epss_scores(list(data_values.keys()), 'epss_score.csv')
 
 for each_score, values in zip(epss_scores, data_values.keys()): #remove data_values which do not have an EPSS score 
-    if type(each_score) is None:
+    if each_score is None:
         epss_scores.remove(each_score)
         del data_values[values]
 
