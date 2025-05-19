@@ -10,12 +10,18 @@ print('getting epss scores')
 epss_scores = get_epss_scores(list(data_values.keys()), 'epss_score.csv')
 data_values2 = data_values
 print(len(data_values))
-for each_score, values in zip(epss_scores, data_values2.keys()): #remove data_values which do not have an EPSS score 
-    if each_score is None:
-        epss_scores.remove(each_score)
-        del data_values[values]
+new_epss_scores = []
+new_data_values = {}
 
-        print(f'removed the following EPSS and CVE-ID: {each_score}, {values}')
+for score, (key, value) in zip(epss_scores, data_values.items()):
+    if score is not None:
+        new_epss_scores.append(score)
+        new_data_values[key] = value
+    else:
+        print(f'removed the following EPSS and CVE-ID: {score}, {key}')
+
+epss_scores = new_epss_scores
+data_values = new_data_values
 
 print(len(data_values))
 
