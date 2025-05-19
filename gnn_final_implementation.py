@@ -8,6 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import torch.nn.functional as F
 from torch.nn import Linear
 from torch_geometric.nn import HeteroConv, GATConv
+from data_related.get_epss_score import get_epss_scores
 
 #model
 class HeteroGNN(torch.nn.Module):
@@ -65,6 +66,25 @@ with open('data_related/h_gnn_output.json') as data_values:
         data_values[v]["vendor"] = enc_vendor[i]
         data_values[v]["description"] = enc_cwe[i]
         data_values[v]["cwe"] = enc_cwe[i]
+
+    print('getting epss scores')
+    epss_scores = get_epss_scores(list(data_values.keys()), 'epss_score.csv')
+    print(len(data_values))
+    new_epss_scores = []
+    new_data_values = {}
+
+    for score, (key, value) in zip(epss_scores, data_values.items()):
+        if score is not None:
+            new_epss_scores.append(score)
+            new_data_values[key] = value
+        else:
+            print(f'removed the following EPSS and CVE-ID: {score}, {key}')
+
+    epss_scores = new_epss_scores
+    data_values = new_data_values
+
+    print(len(data_values))
+
 
     data = HeteroData()
 

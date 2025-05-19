@@ -47,6 +47,6 @@ for epoch in range(100):
 
 model.eval()
 with torch.no_grad():
-    predictions = model(data.x_dict, data.edge_index_dict)['label'].squeeze()
+    predictions = model(data.x_dict, data.edge_index_dict).squeeze()
     mse = F.mse_loss(predictions, target).item()
     print(f"Mean Squared Error: {mse:.4f}")
