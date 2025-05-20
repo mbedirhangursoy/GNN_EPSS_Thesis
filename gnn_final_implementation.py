@@ -54,7 +54,7 @@ with open('data_related/h_gnn_output.json') as data_values:
 
     print(len(data_values))
 
-    
+
     labels = list(data_values.keys())
     attributes = ['basescore', 'baseseverity', 'confidentialityimpact', 'integrityimpact', 'vendor', 'description', 'cwe']
 
@@ -104,9 +104,7 @@ with open('data_related/h_gnn_output.json') as data_values:
 
     edge_index = [[], []]
     edge_attr_list = []
-    threshold = 0.8
-    description_vector_map = {}  # {desc_idx: vector}
-    desc_idx_counter = len(attributes)
+
 
     for label_val in labels:
         for attr in attributes:
