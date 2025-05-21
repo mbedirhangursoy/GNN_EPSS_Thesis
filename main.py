@@ -1,5 +1,5 @@
 from gnn_final_implementation import *
-
+import numpy as np
 
 model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
 
@@ -25,7 +25,35 @@ data['label'].train_mask = train_mask
 data['label'].test_mask = test_mask
 
 
+def evaluate_epss_prediction(mask):
+  
+    out = model(data.x_dict, data.edge_index_dict).squeeze()
+    pred = out[mask]
+    actual = target[mask]
 
+    hits = []
+    all_diffs = []
+
+    for t, o in zip(actual, pred):
+        diff = abs(o - t)
+        all_diffs.append(diff)
+
+        if t > 0.8:
+            threshold = 0.1
+        elif t < 0.1:
+            threshold = 0.05
+        else:
+            threshold = 0.1 * t  # 10%
+
+        hits.append(diff <= threshold)
+
+    return {
+        "hit_rate": np.mean(hits),
+        "average_difference": np.mean(all_diffs),
+        "median_difference": np.median(all_diffs),
+        "total_predictions": len(actual),
+        "hits": int(np.sum(hits))
+    }
 
 def train():
     model.train()
@@ -49,21 +77,5 @@ for epoch in range(1, 101):
     loss = train()
     test_mse = test(data['label'].test_mask)
     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Test MSE: {test_mse:.4f}')
-
-'''model.train()
-for epoch in range(100):
-    print('starting')
-    optimizer.zero_grad()
-    
-    out_dict = model(data.x_dict, data.edge_index_dict)
-    
-    out = out_dict.squeeze()
-    
-    loss = F.mse_loss(out, target)
-    
-    loss.backward()
-    optimizer.step()
-    
-    if epoch % 10 == 0:
-        print(f"Epoch {epoch} | Loss: {loss.item():.4f}")'''
+    evaluate_epss_prediction(data['label'].test_mask)
 
