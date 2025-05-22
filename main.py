@@ -36,8 +36,7 @@ def evaluate_epss_prediction(mask):
 
     for t, o in zip(actual, pred):
         diff = abs(o - t)
-        all_diffs.append(diff)
-
+        all_diffs.append(diff.item())
         if t > 0.8:
             threshold = 0.1
         elif t < 0.1:
@@ -45,8 +44,8 @@ def evaluate_epss_prediction(mask):
         else:
             threshold = 0.1 * t  # 10%
 
-        hits.append(diff <= threshold)
-
+        if diff <= threshold:
+            hits.append(diff.item())
     return {
         "hit_rate": np.mean(hits),
         "average_difference": np.mean(all_diffs),
@@ -77,5 +76,4 @@ for epoch in range(1, 101):
     loss = train()
     test_mse = test(data['label'].test_mask)
     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Test MSE: {test_mse:.4f}')
-    evaluate_epss_prediction(data['label'].test_mask)
-
+    evaluate_epss_prediction(data['label'].test_mask)  
