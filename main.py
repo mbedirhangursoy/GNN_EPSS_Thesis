@@ -1,3 +1,5 @@
+import datetime
+print('starting', datetime.time)
 from gnn_final_implementation import epss_scores
 from torch_geometric.nn import HeteroConv, GATConv
 from torch.nn import Linear
@@ -6,7 +8,7 @@ import numpy as np
 import torch
 
 
-print('got epss scores')
+print('got epss scores', datetime.time)
 #model
 class HeteroGNN(torch.nn.Module):
     def __init__(self, hidden_dim, out_dim, metadata):
