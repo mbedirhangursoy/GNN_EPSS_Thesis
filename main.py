@@ -5,6 +5,8 @@ import torch.nn.functional as F
 import numpy as np
 import torch
 
+
+print('got epss scores')
 #model
 class HeteroGNN(torch.nn.Module):
     def __init__(self, hidden_dim, out_dim, metadata):
