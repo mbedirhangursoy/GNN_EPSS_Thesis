@@ -135,3 +135,6 @@ with open('data_related/h_gnn_output.json') as data_values:
     data['label', 'to', 'attribute'].edge_index = edge_index
     data['label', 'to', 'attribute'].edge_attr = edge_attr
     data['attribute', 'rev_to', 'label'].edge_index = edge_index.flip(0)
+
+    torch.save(data, 'data_related/my_graph.pt')
+    print("Graph saved successfully.")
