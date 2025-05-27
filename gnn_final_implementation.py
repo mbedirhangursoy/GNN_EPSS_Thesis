@@ -5,32 +5,12 @@ import numpy as np
 import json
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import torch.nn.functional as F
-from torch.nn import Linear
-from torch_geometric.nn import HeteroConv, GATConv
-from data_related.get_epss_score import get_epss_scores
+from data_related.get_epss_score import *
 
-#model
-class HeteroGNN(torch.nn.Module):
-    def __init__(self, hidden_dim, out_dim, metadata):
-        super().__init__()
 
-        self.conv1 = HeteroConv({
-            ('label', 'to', 'attribute'): GATConv((-1, -1), hidden_dim, add_self_loops=False),
-            ('attribute', 'rev_to', 'label'): GATConv((-1, -1), hidden_dim, add_self_loops=False)
-        }, aggr='sum')
+remove_empty_epss_scores(2025, 2025)
 
-        self.lin = Linear(hidden_dim, out_dim)
-        self.metadata = metadata
-
-    def forward(self, x_dict, edge_index_dict):
-        x_dict = self.conv1(x_dict, edge_index_dict)
-
-        x_dict = {key: F.relu(x) for key, x in x_dict.items()}
-
-        out = self.lin(x_dict['label'])
-        return out
-
+'''
 #prepare the data
 with open('data_related/h_gnn_output.json') as data_values:
     data_values = json.load(data_values)
@@ -138,3 +118,6 @@ with open('data_related/h_gnn_output.json') as data_values:
 
     torch.save(data, 'data_related/my_graph.pt')
     print("Graph saved successfully.")
+
+
+'''
