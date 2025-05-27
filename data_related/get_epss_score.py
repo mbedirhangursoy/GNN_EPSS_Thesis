@@ -85,7 +85,7 @@ def convert_to_dict(start_year: int, end_year: int):
                 baseseverity = severity_map[baseseverity]
                 confidentialityimpact = severity_map[confidentialityimpact]
                 integrityimpact = severity_map[integrityimpact]
-                description = tokenize_sentence(description) # tokenise the description
+                description = 'This is empty for now' #tokenize_sentence(description) # tokenise the description
 
                 cve_dict[id] = {'basescore': basescore, 'baseseverity': baseseverity, 'confidentialityimpact': confidentialityimpact, 'integrityimpact': integrityimpact, 'vendor': vendor, 'description': description, 'cwe': cwe}
         
