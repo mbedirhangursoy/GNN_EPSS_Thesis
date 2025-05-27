@@ -8,32 +8,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 from data_related.get_epss_score import *
 
 
-remove_empty_epss_scores(2025, 2025)
+remove_empty_epss_scores(2020, 2025)
 
 '''
-#prepare the data
 with open('data_related/h_gnn_output.json') as data_values:
     data_values = json.load(data_values)
-
-
-    print('getting epss scores')
-    epss_scores = get_epss_scores(list(data_values.keys()), 'epss_score.csv')
-    print(len(data_values))
-    new_epss_scores = []
-    new_data_values = {}
-
-    for score, (key, value) in zip(epss_scores, data_values.items()):
-        if score is not None:
-            new_epss_scores.append(score)
-            new_data_values[key] = value
-        else:
-            print(f'removed the following EPSS and CVE-ID: {score}, {key}')
-
-    epss_scores = new_epss_scores
-    data_values = new_data_values
-
-    print(len(data_values))
-
 
     labels = list(data_values.keys())
     attributes = ['basescore', 'baseseverity', 'confidentialityimpact', 'integrityimpact', 'vendor', 'description', 'cwe']
@@ -67,8 +46,6 @@ with open('data_related/h_gnn_output.json') as data_values:
         data_values[v]["vendor"] = enc_vendor[i]
         data_values[v]["description"] = enc_cwe[i]
         data_values[v]["cwe"] = enc_cwe[i]
-
-
 
 
     data = HeteroData()
@@ -118,6 +95,5 @@ with open('data_related/h_gnn_output.json') as data_values:
 
     torch.save(data, 'data_related/my_graph.pt')
     print("Graph saved successfully.")
-
 
 '''
