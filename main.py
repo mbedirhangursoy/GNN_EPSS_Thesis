@@ -1,9 +1,10 @@
+from sklearn.metrics import confusion_matrix, recall_score, precision_score
+from data_related.get_epss_score import *
 from torch_geometric.nn import HeteroConv, GATConv
 from torch.nn import Linear
 import torch.nn.functional as F
 import numpy as np
-import torch
-import csv
+import torch, csv
 
 #model
 class HeteroGNN(torch.nn.Module):
@@ -25,6 +26,9 @@ class HeteroGNN(torch.nn.Module):
 
         out = self.lin(x_dict['label'])
         return out
+
+
+remove_empty_epss_scores(2020, 2025)
 
 data = torch.load('data_related/my_graph.pt')
 
@@ -91,6 +95,7 @@ def evaluate_epss_prediction(mask):
         "hits": int(np.sum(hits))
     }
 
+
 def train():
     model.train()
     optimizer.zero_grad()
@@ -106,6 +111,8 @@ def test(mask):
         out = model(data.x_dict, data.edge_index_dict).squeeze()
         pred = out[mask]
         actual = target[mask]
+        print('Recall: ', recall_score(actual, pred))
+        print('Precision: ', precision_score(actual, pred))
         mse = F.mse_loss(pred, actual).item()
         return mse
 
@@ -113,4 +120,3 @@ for epoch in range(1, 101):
     loss = train()
     test_mse = test(data['label'].test_mask)
     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Test MSE: {test_mse:.4f}')
-    evaluate_epss_prediction(data['label'].test_mask)  

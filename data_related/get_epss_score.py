@@ -146,7 +146,6 @@ def get_epss_score(cve: str): #gets only one score
             else:
                 return epss_score
             
-get_epss_score('CVE-1999-0012')
 
 def get_epss_scores(cve_ids: list[str]): #gets_all_scores
     epss_scores_list = []
