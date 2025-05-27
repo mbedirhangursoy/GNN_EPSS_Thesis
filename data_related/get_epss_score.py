@@ -116,7 +116,7 @@ def request_epss_scores(): #requests epss scores
 
 
         with gzip.open(io.BytesIO(response.content), 'rt') as f:
-            df = pd.read_csv(f)
+            df = pd.read_csv(f, low_memory=False)
             df.columns = df.iloc[0]
             df = df.iloc[1:]
             df = df.reset_index()
@@ -146,7 +146,7 @@ def get_epss_score(cve: str): #gets only one score
             else:
                 return epss_score
             
-
+get_epss_score('CVE-1999-0012')
 
 def get_epss_scores(cve_ids: list[str]): #gets_all_scores
     epss_scores_list = []
