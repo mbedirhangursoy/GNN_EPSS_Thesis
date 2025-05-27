@@ -166,7 +166,7 @@ def remove_empty_epss_scores(start_year, end_year):
     data_values = convert_to_dict(start_year, end_year)
 
     print('getting epss scores')
-    epss_scores = get_epss_scores(list(data_values.keys()), 'epss_score.csv')
+    epss_scores = get_epss_scores(list(data_values.keys()))
     print(len(data_values))
     new_epss_scores = []
     new_data_values = {}
