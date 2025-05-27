@@ -148,10 +148,10 @@ def get_epss_score(cve: str): #gets only one score
             
 
 
-def get_epss_scores(cve_ids: list[str], file_location: str): #gets_all_scores
+def get_epss_scores(cve_ids: list[str]): #gets_all_scores
     epss_scores_list = []
     for id in cve_ids:
-        epss_scores_list.append(get_epss_score(id, file_location))
+        epss_scores_list.append(get_epss_score(id))
 
     return epss_scores_list
 
