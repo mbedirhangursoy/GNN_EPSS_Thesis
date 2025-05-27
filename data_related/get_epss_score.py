@@ -74,13 +74,13 @@ def convert_to_dict(start_year: int, end_year: int):
     severity_map = {"LOW": 1, "MEDIUM": 2, "HIGH": 3, "CRITICAL": 4, None: 0, 'NONE': 0}
 
     while start_year <= end_year:
-        for filesxx in os.listdir(f'cvelistV5-main/cves/{start_year}/'):
+        for filesxx in os.listdir(f'data_related/cvelistV5-main/cves/{start_year}/'):
             ds_store_file_location = f'cvelistV5-main/cves/{start_year}/.DS_store' #remove all hidden files
             if os.path.isfile(ds_store_file_location):
                 os.remove(ds_store_file_location)
-            for cve in os.listdir(f'cvelistV5-main/cves/{start_year}/{filesxx}'):
+            for cve in os.listdir(f'data_related/cvelistV5-main/cves/{start_year}/{filesxx}'):
                 print(cve)
-                id, basescore, baseseverity, confidentialityimpact, integrityimpact, vendor, description, cwe = df_converter(f'cvelistV5-main/cves/{start_year}/{filesxx}/{cve}')
+                id, basescore, baseseverity, confidentialityimpact, integrityimpact, vendor, description, cwe = df_converter(f'data_related/velistV5-main/cves/{start_year}/{filesxx}/{cve}')
 
                 baseseverity = severity_map[baseseverity]
                 confidentialityimpact = severity_map[confidentialityimpact]
@@ -184,7 +184,6 @@ def remove_empty_epss_scores(start_year, end_year):
     print(len(data_values))
 
     keys = epss_scores[0].keys()
-
     with open("epss_score.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=keys)
         w.writeheader()
@@ -194,5 +193,3 @@ def remove_empty_epss_scores(start_year, end_year):
     with open("h_gnn_output.json", "w") as outfile:
         json.dump(data_values, outfile)
 
-
-remove_empty_epss_scores(2025, 2025)

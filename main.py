@@ -1,14 +1,10 @@
-import datetime
-print('starting', datetime.time)
-from gnn_final_implementation import epss_scores
 from torch_geometric.nn import HeteroConv, GATConv
 from torch.nn import Linear
 import torch.nn.functional as F
 import numpy as np
 import torch
+import csv
 
-
-print('got epss scores', datetime.time)
 #model
 class HeteroGNN(torch.nn.Module):
     def __init__(self, hidden_dim, out_dim, metadata):
@@ -32,10 +28,18 @@ class HeteroGNN(torch.nn.Module):
 
 data = torch.load('data_related/my_graph.pt')
 
+epss_scores = []
+with open('data_related/epss_score.csv') as csvfile:
+    readCSV = csv.reader(csvfile, delimiter=',')
+    for row in readCSV:
+        epss_scores.append(row[1])
+
+
 model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
 
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+
 
 target = torch.tensor(epss_scores, dtype=torch.float)
 

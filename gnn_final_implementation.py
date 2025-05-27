@@ -57,8 +57,8 @@ with open('data_related/h_gnn_output.json') as data_values:
     enc_vendor = OneHotEncoder().fit_transform(all_vendors).toarray()
     enc_description = CountVectorizer().fit_transform(all_descriptions_together).toarray()
     enc_cwe = OneHotEncoder().fit_transform(all_cwes).toarray()
-    
-    
+
+
     for i, v in enumerate(labels): #adds the encoded attributes back to the loaded json file
         data_values[v]["basescore"] = enc_cwe[i]
         data_values[v]["baseseverity"] = enc_cwe[i]
