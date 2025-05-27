@@ -75,12 +75,12 @@ def convert_to_dict(start_year: int, end_year: int):
 
     while start_year <= end_year:
         for filesxx in os.listdir(f'data_related/cvelistV5-main/cves/{start_year}/'):
-            #ds_store_file_location = f'data_related/cvelistV5-main/cves/{start_year}/.DS_store' #remove all hidden files
-            #if os.path.isfile(ds_store_file_location):
-            #    os.remove(ds_store_file_location)
+            ds_store_file_location = f'data_related/cvelistV5-main/cves/{start_year}/.DS_Store' #remove all hidden files
+            if os.path.isfile(ds_store_file_location):
+                os.remove(ds_store_file_location)
             for cve in os.listdir(f'data_related/cvelistV5-main/cves/{start_year}/{filesxx}'):
                 print(cve)
-                id, basescore, baseseverity, confidentialityimpact, integrityimpact, vendor, description, cwe = df_converter(f'data_related/velistV5-main/cves/{start_year}/{filesxx}/{cve}')
+                id, basescore, baseseverity, confidentialityimpact, integrityimpact, vendor, description, cwe = df_converter(f'data_related/cvelistV5-main/cves/{start_year}/{filesxx}/{cve}')
 
                 baseseverity = severity_map[baseseverity]
                 confidentialityimpact = severity_map[confidentialityimpact]
