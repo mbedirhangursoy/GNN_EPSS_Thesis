@@ -5,8 +5,97 @@ import io
 import pandas as pd
 from datetime import date, timedelta
 import csv
+import os
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer as wnl
+import json
+
+### Everything after here is about modifying the CVE data ###
+
+def df_converter(data): # reads the file and returns the data that is asked for
+    with open(data) as file:
+        dict_data = json.load(file)
+        id = dict_data['cveMetadata']['cveId']
+        try:
+            metrics = dict_data['containers']['cna']['metrics'][0]['cvssV3_1']
+        except KeyError:
+            try:
+                metrics = dict_data['containers']['cna']['metrics'][0]['cvssV3_0']
+            except KeyError:
+                try:
+                    metrics = dict_data['containers']['adp'][0]['metrics'][0]['cvssV3_1']
+                except KeyError:    
+                    metrics = {}
 
 
+        baseseverity = metrics.get('baseSeverity')
+        basescore = metrics.get('baseScore')
+        confidentialityimpact = metrics.get('confidentialityImpact')
+        integrityimpact = metrics.get('integrityImpact')
+
+
+        try:
+            cwe =  dict_data['containers']['cna']['problemTypes'][0]['descriptions'][0]['cweId']
+        except KeyError:
+            try:
+                cwe =  dict_data['containers']['adp'][0]['problemTypes'][0]['descriptions'][0]['cweId']
+            except KeyError:
+                cwe = None
+
+        try:
+            vendor =  dict_data['containers']['cna']['affected'][0]['vendor']
+            if vendor == 'n/a':
+                vendor = None
+        except KeyError:
+            vendor = None
+
+        try:
+            description =  dict_data['containers']['cna']['descriptions'][0]['value']
+        except KeyError:
+            description = 'Does not exist'
+
+       
+        return id, basescore, baseseverity, confidentialityimpact, integrityimpact, vendor, description, cwe
+
+def tokenize_sentence(sentence):
+    if isinstance(sentence, str):
+        
+        tokens = word_tokenize(sentence)
+        filtered_words = [word for word in tokens if word not in stopwords.words('english')]
+        lemmatized_word = [wnl().lemmatize(word) for word in filtered_words]
+        without_punctuation = [i for i in lemmatized_word if i not in '.,!?']
+        
+        return without_punctuation
+
+def convert_to_dict(start_year: int, end_year: int):
+
+    cve_dict = {}
+    severity_map = {"LOW": 1, "MEDIUM": 2, "HIGH": 3, "CRITICAL": 4, None: 0, 'NONE': 0}
+
+    while start_year <= end_year:
+        for filesxx in os.listdir(f'cvelistV5-main/cves/{start_year}/'):
+            ds_store_file_location = f'cvelistV5-main/cves/{start_year}/.DS_store' #remove all hidden files
+            if os.path.isfile(ds_store_file_location):
+                os.remove(ds_store_file_location)
+            for cve in os.listdir(f'cvelistV5-main/cves/{start_year}/{filesxx}'):
+                print(cve)
+                id, basescore, baseseverity, confidentialityimpact, integrityimpact, vendor, description, cwe = df_converter(f'cvelistV5-main/cves/{start_year}/{filesxx}/{cve}')
+
+                baseseverity = severity_map[baseseverity]
+                confidentialityimpact = severity_map[confidentialityimpact]
+                integrityimpact = severity_map[integrityimpact]
+                description = tokenize_sentence(description) # tokenise the description
+
+                cve_dict[id] = {'basescore': basescore, 'baseseverity': baseseverity, 'confidentialityimpact': confidentialityimpact, 'integrityimpact': integrityimpact, 'vendor': vendor, 'description': description, 'cwe': cwe}
+        
+            
+        start_year += 1
+
+    return cve_dict
+
+
+### Everything after is about the EPSS score ###
 
 def request_epss_scores(): #requests epss scores 
     base_url = "https://epss.empiricalsecurity.com/epss_scores-{}.csv.gz"
@@ -41,26 +130,23 @@ def request_epss_scores(): #requests epss scores
                     epss_dict[cve] = float(epss)
     
     epss_list = [{"cve": cve, "epss": score} for cve, score in epss_dict.items()]
-    keys = epss_list[0].keys()
 
-    with open("epss_score.csv", "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys)
-        w.writeheader()
-        for row in epss_list:
-            w.writerow(row)
+    return epss_list
 
     
 
-def get_epss_score(cve: str, file_location: str): #gets only one score
-    with open(file_location) as scores:
-        df = pd.read_csv(scores)
-        for data, epss_score in zip(df['cve'], df['epss']):
-            if cve == data:
-                if epss_score is None:
-                    return 0
-                else:
-                    return epss_score
+def get_epss_score(cve: str): #gets only one score
+
+    scores = request_epss_scores()
+    df = pd.DataFrame.from_dict(scores)
+    for data, epss_score in zip(df['cve'], df['epss']):
+        if cve == data:
+            if epss_score is None:
+                return 0
+            else:
+                return epss_score
             
+
 
 def get_epss_scores(cve_ids: list[str], file_location: str): #gets_all_scores
     epss_scores_list = []
@@ -69,3 +155,44 @@ def get_epss_scores(cve_ids: list[str], file_location: str): #gets_all_scores
 
     return epss_scores_list
 
+
+### Removes from both EPSS list and CVE dictionary ###
+
+def remove_empty_epss_scores(start_year, end_year):
+    '''
+    This function reads all of the CVE given and removes the ones which do not have an EPSS score. It also saves the graph and the epss score file to be loaded later.
+    '''
+
+    data_values = convert_to_dict(start_year, end_year)
+
+    print('getting epss scores')
+    epss_scores = get_epss_scores(list(data_values.keys()), 'epss_score.csv')
+    print(len(data_values))
+    new_epss_scores = []
+    new_data_values = {}
+
+    for score, (key, value) in zip(epss_scores, data_values.items()):
+        if score is not None:
+            new_epss_scores.append(score)
+            new_data_values[key] = value
+        else:
+            print(f'removed the following EPSS and CVE-ID: {score}, {key}')
+
+    epss_scores = new_epss_scores
+    data_values = new_data_values
+
+    print(len(data_values))
+
+    keys = epss_scores[0].keys()
+
+    with open("epss_score.csv", "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=keys)
+        w.writeheader()
+        for row in epss_scores:
+            w.writerow(row)
+
+    with open("h_gnn_output.json", "w") as outfile:
+        json.dump(data_values, outfile)
+
+
+remove_empty_epss_scores(2025, 2025)
