@@ -6,7 +6,7 @@ import numpy as np
 import torch, csv
 from data_related.get_epss_score import *
 
-
+remove_empty_epss_scores(2025, 2025)
 
 '''
 #model
