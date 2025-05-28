@@ -1,11 +1,16 @@
+print('hello2')
 from sklearn.metrics import confusion_matrix, recall_score, precision_score
 from torch_geometric.nn import HeteroConv, GATConv
 from torch.nn import Linear
 import torch.nn.functional as F
 import numpy as np
 import torch, csv
+#from data_related.get_epss_score import *
 
-print('hello')
+print('hello3')
+#tired = remove_empty_epss_scores(2025, 2025)
+
+#print(tired)
 
 '''
 #model

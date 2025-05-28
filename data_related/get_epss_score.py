@@ -120,7 +120,7 @@ def request_epss_scores(): #requests epss scores
             df.columns = df.iloc[0]
             df = df.iloc[1:]
             df = df.reset_index()
-            print('hello')
+            #print('hello')
             print(df.columns.tolist())
             for _, row in df.iterrows(): 
                 cve = row['index'] 
@@ -191,7 +191,3 @@ def remove_empty_epss_scores(start_year, end_year):
 
     with open("h_gnn_output2.json", "w") as outfile:
         json.dump(data_values, outfile)
-print('hello')
-tired = remove_empty_epss_scores(2025, 2025)
-
-print(tired)
