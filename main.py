@@ -7,8 +7,11 @@ import numpy as np
 import torch, csv
 from data_related.get_epss_score import *
 
+def function_of_something():
+    return 'just work omg'
+
 print('hello, pls work 2')
-print(get_epss_scores(['CVE-2025-2324']))
+print(function_of_something())
 #remove_empty_epss_scores(2024, 2025)
 
 '''
