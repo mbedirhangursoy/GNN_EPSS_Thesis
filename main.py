@@ -76,8 +76,10 @@ def evaluate_epss_prediction(mask):
     all_diffs = []
 
     for t, o in zip(actual, pred):
+        t = t.item()
+        o = o.item()
         diff = abs(o - t)
-        all_diffs.append(diff.item())
+        all_diffs.append(diff)
         if t > 0.8:
             threshold = 0.1
         elif t < 0.1:
@@ -86,7 +88,9 @@ def evaluate_epss_prediction(mask):
             threshold = 0.1 * t  # 10%
 
         if diff <= threshold:
-            hits.append(diff.item())
+            hits.append(diff)
+
+    print(hits, all_diffs)
     return {
         "hit_rate": np.mean(hits),
         "average_difference": np.mean(all_diffs),
@@ -94,6 +98,7 @@ def evaluate_epss_prediction(mask):
         "total_predictions": len(actual),
         "hits": int(np.sum(hits))
     }
+
 
 
 def train():
