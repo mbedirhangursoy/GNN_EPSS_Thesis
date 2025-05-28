@@ -8,7 +8,7 @@ import torch, csv
 from data_related.get_epss_score import *
 
 print('hello, pls work 2')
-print(get_epss_scores(['CVE-2025-2324']))
+#print(get_epss_scores(['CVE-2025-2324']))
 #remove_empty_epss_scores(2024, 2025)
 
 '''
