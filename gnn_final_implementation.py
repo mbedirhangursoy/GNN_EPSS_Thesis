@@ -5,8 +5,8 @@ import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from data_related.get_epss_score import *
-print('hello')
-#remove_empty_epss_scores(2025, 2025)
+
+remove_empty_epss_scores(2025, 2025)
 '''
 with open('data_related/h_gnn_output.json') as data_values:
     data_values = json.load(data_values)
