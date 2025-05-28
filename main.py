@@ -5,6 +5,9 @@ import torch.nn.functional as F
 import numpy as np
 import torch, csv
 
+print('hello')
+
+'''
 #model
 class HeteroGNN(torch.nn.Module):
     def __init__(self, hidden_dim, out_dim, metadata):
@@ -122,3 +125,4 @@ for epoch in range(1, 101):
     loss = train()
     test_mse = test(data['label'].test_mask)
     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Test MSE: {test_mse:.4f}')
+'''
