@@ -8,9 +8,8 @@ import torch, csv
 from data_related.get_epss_score import *
 
 print('hello3')
-#tired = remove_empty_epss_scores(2025, 2025)
+remove_empty_epss_scores(2020, 2025)
 
-#print(tired)
 
 '''
 #model
