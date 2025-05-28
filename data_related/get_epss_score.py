@@ -192,3 +192,4 @@ def remove_empty_epss_scores(start_year, end_year):
     with open("h_gnn_output2.json", "w") as outfile:
         json.dump(data_values, outfile)
 
+remove_empty_epss_scores(2025, 2025)
