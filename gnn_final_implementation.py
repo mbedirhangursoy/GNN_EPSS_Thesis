@@ -4,7 +4,9 @@ from sklearn.preprocessing import OneHotEncoder
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from data_related.get_epss_score import *
 
+remove_empty_epss_scores(2020, 2025)
 
 with open('data_related/h_gnn_output.json') as data_values:
     data_values = json.load(data_values)
@@ -48,6 +50,7 @@ with open('data_related/h_gnn_output.json') as data_values:
     num_label_nodes = len(labels) # Labeling of node features
     data['label'].x = torch.eye(num_label_nodes)
     label_ids = {val: i for i, val in enumerate(labels)}
+    data['label'].num_nodes = num_label_nodes
 
     num_attrs = len(attributes) # Attribute node features
     data['attribute'].x = torch.randn(num_attrs, 32)

@@ -1,5 +1,4 @@
 from sklearn.metrics import confusion_matrix, recall_score, precision_score
-from data_related.get_epss_score import *
 from torch_geometric.nn import HeteroConv, GATConv
 from torch.nn import Linear
 import torch.nn.functional as F
@@ -28,8 +27,6 @@ class HeteroGNN(torch.nn.Module):
         return out
 
 
-remove_empty_epss_scores(2020, 2025)
-
 data = torch.load('data_related/my_graph.pt')
 
 epss_scores = []
@@ -49,7 +46,7 @@ target = torch.tensor(epss_scores, dtype=torch.float)
 
 
 num_nodes = data['label'].num_nodes
-perm = torch.randperm(num_nodes) #change to num_nodes later if not working
+perm = torch.randperm(num_nodes)
 
 train_idx = perm[:int(0.7 * num_nodes)]
 test_idx = perm[int(0.7 * num_nodes):]
