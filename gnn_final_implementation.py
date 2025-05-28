@@ -5,9 +5,9 @@ import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from data_related.get_epss_score import *
-
-remove_empty_epss_scores(2024, 2025)
-
+print('hello')
+#remove_empty_epss_scores(2025, 2025)
+'''
 with open('data_related/h_gnn_output.json') as data_values:
     data_values = json.load(data_values)
 
@@ -93,3 +93,4 @@ with open('data_related/h_gnn_output.json') as data_values:
 
     torch.save(data, 'data_related/my_graph.pt')
     print("Graph saved successfully.")
+'''
