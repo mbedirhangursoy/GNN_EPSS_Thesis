@@ -1,3 +1,4 @@
+print('hello, pls work')
 from sklearn.metrics import confusion_matrix, recall_score, precision_score
 from torch_geometric.nn import HeteroConv, GATConv
 from torch.nn import Linear
@@ -6,7 +7,8 @@ import numpy as np
 import torch, csv
 from data_related.get_epss_score import *
 
-remove_empty_epss_scores(2025, 2025)
+print('hello, pls work 2')
+#remove_empty_epss_scores(2025, 2025)
 
 '''
 #model
