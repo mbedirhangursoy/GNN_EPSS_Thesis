@@ -159,9 +159,10 @@ def get_epss_scores(cve_ids: list[str]): #gets_all_scores
 
 def remove_empty_epss_scores(start_year, end_year):
     '''
-    This function reads all of the CVE given and removes the ones which do not have an EPSS score. It also saves the graph and the epss score file to be loaded later.
+    This function reads all of the CVE given and removes the ones 
+    which do not have an EPSS score. It also saves the graph and the epss score file to be loaded later.
     '''
-
+    print(f"Inside function: removing scores from {start_year} to {end_year}")
     data_values = convert_to_dict(start_year, end_year)
 
     print('getting epss scores')
@@ -191,3 +192,7 @@ def remove_empty_epss_scores(start_year, end_year):
 
     with open("h_gnn_output2.json", "w") as outfile:
         json.dump(data_values, outfile)
+
+
+    return epss_scores
+
