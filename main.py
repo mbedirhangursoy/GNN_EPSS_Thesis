@@ -1,4 +1,3 @@
-print('hello, pls work')
 from sklearn.metrics import confusion_matrix, recall_score, precision_score
 from torch_geometric.nn import HeteroConv, GATConv
 from torch.nn import Linear
@@ -6,75 +5,9 @@ import torch.nn.functional as F
 import numpy as np
 import torch, csv
 from data_related.get_epss_score import *
-'''
-### --------------------------------------------------------------------------- ###
-
-def request_epss_scores(): #requests epss scores 
-    base_url = "https://epss.empiricalsecurity.com/epss_scores-{}.csv.gz"
-
-    epss_dict = {}
-
-    
-    current_date = date.today()
-    previous_30_day_date = current_date - timedelta(days=30)
 
 
-    for date_ in (previous_30_day_date + timedelta(n) for n in range(30)):
-        date_str = date_.strftime("%Y-%m-%d")
-        url = base_url.format(date_str)
-
-        response = requests.get(url)
-        response.raise_for_status()
-
-
-        with gzip.open(io.BytesIO(response.content), 'rt') as f:
-            df = pd.read_csv(f, low_memory=False)
-            df.columns = df.iloc[0]
-            df = df.iloc[1:]
-            df = df.reset_index()
-            #print('hello')
-            print(df.columns.tolist())
-            for _, row in df.iterrows(): 
-                cve = row['index'] 
-                epss = row['epss']
-
-                if cve not in epss_dict or float(epss) > epss_dict[cve]:
-                    epss_dict[cve] = float(epss)
-    
-    epss_list = [{"cve": cve, "epss": score} for cve, score in epss_dict.items()]
-
-    return epss_list
-
-    
-
-def get_epss_score(cve: str): #gets only one score
-
-    scores = request_epss_scores()
-    df = pd.DataFrame.from_dict(scores)
-    for data, epss_score in zip(df['cve'], df['epss']):
-        if cve == data:
-            if epss_score is None:
-                return 0
-            else:
-                return epss_score
-            
-
-def get_epss_scores(cve_ids: list[str]): #gets_all_scores
-    epss_scores_list = []
-    for id in cve_ids:
-        epss_scores_list.append(get_epss_score(id))
-
-    return epss_scores_list
-
-
-### --------------------------------------------------------------------------- ###
-'''
-
-convert_to_dict(2025, 2025)
-
-print('hello, pls work 2')
-
-#remove_empty_epss_scores(2024, 2025)
+remove_empty_epss_scores(2025, 2025)
 
 '''
 #model
