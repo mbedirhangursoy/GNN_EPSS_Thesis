@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import numpy as np
 import torch, csv
 from data_related.get_epss_score import *
-
+'''
 ### --------------------------------------------------------------------------- ###
 
 def request_epss_scores(): #requests epss scores 
@@ -68,8 +68,9 @@ def get_epss_scores(cve_ids: list[str]): #gets_all_scores
 
 
 ### --------------------------------------------------------------------------- ###
+'''
 
-print(get_epss_scores(['CVE-2025-2324']))
+convert_to_dict(2025, 2025)
 
 print('hello, pls work 2')
 

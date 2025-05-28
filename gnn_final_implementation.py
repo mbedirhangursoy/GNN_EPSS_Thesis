@@ -8,7 +8,7 @@ from data_related.get_epss_score import *
 
 
 
-'''
+
 with open('data_related/h_gnn_output.json') as data_values:
     data_values = json.load(data_values)
 
@@ -94,4 +94,3 @@ with open('data_related/h_gnn_output.json') as data_values:
 
     torch.save(data, 'data_related/my_graph.pt')
     print("Graph saved successfully.")
-'''
