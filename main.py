@@ -7,7 +7,7 @@ import torch, csv
 from data_related.get_epss_score import *
 
 
-remove_empty_epss_scores(2025, 2025)
+epss_score, data_values = remove_empty_epss_scores(2025, 2025)
 
 '''
 #model
