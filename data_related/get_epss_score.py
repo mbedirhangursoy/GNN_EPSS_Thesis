@@ -185,16 +185,14 @@ def remove_empty_epss_scores(start_year, end_year):
 
     print(len(data_values))
 
-    keys = epss_scores[0].keys()
     with open("epss_score2.csv", "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys)
-        w.writeheader()
-        for row in epss_scores:
-            w.writerow(row)
+        writer = csv.writer(f)
+        for score, (key, _) in zip(epss_scores, data_values.items()):
+            writer.writerow([key, score])
 
     with open("h_gnn_output2.json", "w") as outfile:
         json.dump(data_values, outfile)
 
 
-    return epss_scores
+    return epss_scores, data_values
 
