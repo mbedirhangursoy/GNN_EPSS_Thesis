@@ -7,9 +7,9 @@ import torch, csv
 from data_related.get_epss_score import *
 
 
-epss_score, data_values = remove_empty_epss_scores(2025, 2025)
+#epss_score, data_values = remove_empty_epss_scores(2025, 2025)
 
-'''
+
 #model
 class HeteroGNN(torch.nn.Module):
     def __init__(self, hidden_dim, out_dim, metadata):
@@ -35,7 +35,7 @@ class HeteroGNN(torch.nn.Module):
 data = torch.load('data_related/my_graph.pt')
 
 epss_scores = []
-with open('data_related/epss_score.csv') as csvfile:
+with open('epss_score2.csv') as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     for row in readCSV:
         epss_scores.append(row[1])
@@ -118,8 +118,6 @@ def test(mask):
         out = model(data.x_dict, data.edge_index_dict).squeeze()
         pred = out[mask]
         actual = target[mask]
-        print('Recall: ', recall_score(actual, pred))
-        print('Precision: ', precision_score(actual, pred))
         mse = F.mse_loss(pred, actual).item()
         return mse
 
@@ -127,4 +125,3 @@ for epoch in range(1, 101):
     loss = train()
     test_mse = test(data['label'].test_mask)
     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Test MSE: {test_mse:.4f}')
-'''

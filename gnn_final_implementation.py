@@ -14,7 +14,7 @@ with open('h_gnn_output2.json') as data_values:
     data_values = json.load(data_values)
 
     labels = list(data_values.keys())
-    attributes = ['basescore', 'baseseverity', 'confidentialityimpact', 'integrityimpact', 'vendor', 'description', 'cwe']
+    attributes = ['basescore', 'baseseverity', 'confidentialityimpact', 'integrityimpact', 'vendor', 'cwe']
 
 
     all_basescores = [[data_values[v]["basescore"]] for v in labels]
@@ -22,10 +22,7 @@ with open('h_gnn_output2.json') as data_values:
     all_confidentialityimpacts = [[data_values[v]["confidentialityimpact"]] for v in labels]
     all_integrityimpacts = [[data_values[v]["integrityimpact"]] for v in labels]
     all_vendors = [[data_values[v]["vendor"]] for v in labels]
-    all_descriptions = [data_values[v]["description"] for v in labels]
     all_cwes = [[data_values[v]["cwe"]] for v in labels]
-
-    all_descriptions_together = [' '.join(tokens) for tokens in all_descriptions]
 
 
     enc_basescore = OneHotEncoder().fit_transform(all_basescores).toarray()
@@ -33,7 +30,6 @@ with open('h_gnn_output2.json') as data_values:
     enc_confidentialityimpact = OneHotEncoder().fit_transform(all_confidentialityimpacts).toarray()
     enc_integrityimpact = OneHotEncoder().fit_transform(all_integrityimpacts).toarray()
     enc_vendor = OneHotEncoder().fit_transform(all_vendors).toarray()
-    enc_description = CountVectorizer().fit_transform(all_descriptions_together).toarray()
     enc_cwe = OneHotEncoder().fit_transform(all_cwes).toarray()
 
 
@@ -43,7 +39,6 @@ with open('h_gnn_output2.json') as data_values:
         data_values[v]["confidentialityimpact"] = enc_cwe[i]
         data_values[v]["integrityimpact"] = enc_cwe[i]
         data_values[v]["vendor"] = enc_vendor[i]
-        data_values[v]["description"] = enc_cwe[i]
         data_values[v]["cwe"] = enc_cwe[i]
 
 
