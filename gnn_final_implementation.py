@@ -10,6 +10,7 @@ from data_related.get_epss_score import *
 
 
 with open('h_gnn_output2.json') as data_values:
+    print('opened file and starting to create the graph')
     data_values = json.load(data_values)
 
     labels = list(data_values.keys())
