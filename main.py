@@ -38,7 +38,7 @@ epss_scores = []
 with open('epss_score2.csv') as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     for row in readCSV:
-        epss_scores.append(int(row[1]))
+        epss_scores.append(float(row[1]))
 
 
 model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
