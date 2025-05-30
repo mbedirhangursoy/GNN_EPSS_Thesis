@@ -7,7 +7,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from data_related.get_epss_score import *
 
 
-
+remove_empty_epss_scores(2020, 2025)
 
 with open('h_gnn_output2.json') as data_values:
     print('opened file and starting to create the graph')
@@ -88,5 +88,5 @@ with open('h_gnn_output2.json') as data_values:
     data['label', 'to', 'attribute'].edge_attr = edge_attr
     data['attribute', 'rev_to', 'label'].edge_index = edge_index.flip(0)
 
-    torch.save(data, 'data_related/my_graph.pt')
+    torch.save(data, 'data_related/my_final_graph.pt')
     print("Graph saved successfully.")
