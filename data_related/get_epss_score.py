@@ -120,7 +120,6 @@ def request_epss_scores(): #requests epss scores
             df.columns = df.iloc[0]
             df = df.iloc[1:]
             df = df.reset_index()
-            #print('hello')
             print(df.columns.tolist())
             for _, row in df.iterrows(): 
                 cve = row['index'] 
@@ -137,17 +136,17 @@ def request_epss_scores(): #requests epss scores
 
 def get_epss_score(cve: str): #gets only one score
 
-    #scores = request_epss_scores()
-    with open('epss_score.csv') as scores:
-        scores = pd.read_csv(scores)
-        df = pd.DataFrame.from_dict(scores)
-        for data, epss_score in zip(df['cve'], df['epss']):
-            if cve == data:
-                if epss_score is None:
-                    return 0
-                else:
-                    return epss_score
-            
+    scores = request_epss_scores()
+    '''with open('epss_score.csv') as scores:
+        scores = pd.read_csv(scores)'''
+    df = pd.DataFrame.from_dict(scores)
+    for data, epss_score in zip(df['cve'], df['epss']):
+        if cve == data:
+            if epss_score is None:
+                return 0
+            else:
+                return epss_score
+                
 
 def get_epss_scores(cve_ids: list[str]): #gets_all_scores
     epss_scores_list = []
@@ -155,6 +154,7 @@ def get_epss_scores(cve_ids: list[str]): #gets_all_scores
         epss_scores_list.append(get_epss_score(id))
 
     return epss_scores_list
+
 
 
 ### Removes from both EPSS list and CVE dictionary ###
