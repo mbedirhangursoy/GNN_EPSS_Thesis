@@ -148,7 +148,7 @@ def get_epss_score(cve: str): #gets only one score
                 else:
                     return epss_score
             
-print(get_epss_score('CVE-1999-1419'))
+
 def get_epss_scores(cve_ids: list[str]): #gets_all_scores
     epss_scores_list = []
     for id in cve_ids:
@@ -185,12 +185,12 @@ def remove_empty_epss_scores(start_year, end_year):
 
     print(len(data_values))
 
-    with open("epss_score2.csv", "w", newline="") as f:
+    with open("epss_score_final.csv", "w", newline="") as f:
         writer = csv.writer(f)
         for score, (key, _) in zip(epss_scores, data_values.items()):
             writer.writerow([key, score])
 
-    with open("h_gnn_output2.json", "w") as outfile:
+    with open("h_gnn_output_final.json", "w") as outfile:
         json.dump(data_values, outfile)
 
 

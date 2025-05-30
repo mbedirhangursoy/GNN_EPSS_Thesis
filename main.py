@@ -7,7 +7,6 @@ import torch, csv
 from data_related.get_epss_score import *
 
 
-#epss_score, data_values = remove_empty_epss_scores(2025, 2025)
 
 
 #model
@@ -32,10 +31,10 @@ class HeteroGNN(torch.nn.Module):
         return out
 
 
-data = torch.load('data_related/my_graph.pt', weights_only=False)
+data = torch.load('data_related/my_final_graph.pt', weights_only=False)
 
 epss_scores = []
-with open('epss_score2.csv') as csvfile:
+with open('epss_score_final.csv') as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     for row in readCSV:
         epss_scores.append(float(row[1]))
