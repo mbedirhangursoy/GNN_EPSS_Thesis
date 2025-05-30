@@ -41,11 +41,11 @@ with open('h_gnn_output_final.json') as data_values:
 
 
     data = HeteroData()
-    '''
+    
     num_label_nodes = len(labels) # Labeling of node features
     data['label'].x = torch.eye(num_label_nodes)
     label_ids = {val: i for i, val in enumerate(labels)}
-    data['label'].num_nodes = num_label_nodes'''
+    data['label'].num_nodes = num_label_nodes
 
     num_attrs = len(attributes) # Attribute node features
     data['attribute'].x = torch.randn(num_attrs, 32)
