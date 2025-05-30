@@ -7,8 +7,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 from data_related.get_epss_score import *
 
 
-remove_empty_epss_scores(2020, 2025)
-
 with open('h_gnn_output_final.json') as data_values:
     print('opened file and starting to create the graph')
     data_values = json.load(data_values)

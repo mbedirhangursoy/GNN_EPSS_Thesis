@@ -54,6 +54,7 @@ perm = torch.randperm(num_nodes)
 
 train_idx = perm[:int(0.7 * num_nodes)]
 test_idx = perm[int(0.7 * num_nodes):]
+validation_idx = perm
 
 train_mask = torch.zeros(num_nodes, dtype=torch.bool)
 train_mask[train_idx] = True
@@ -61,9 +62,12 @@ train_mask[train_idx] = True
 test_mask = torch.zeros(num_nodes, dtype=torch.bool)
 test_mask[test_idx] = True
 
+validation_mask = torch.zeros(num_nodes, dtype=torch.bool)
+validation_mask[validation_idx] = True
+
 data['label'].train_mask = train_mask
 data['label'].test_mask = test_mask
-
+data['label'].validation_mask = validation_mask
 
 
 
@@ -120,7 +124,10 @@ def test(mask):
         mse = F.mse_loss(pred, actual).item()
         return mse
 
+
 for epoch in range(1, 101):
     loss = train()
+    validation_mse = test(data['label'].validation_mask)
     test_mse = test(data['label'].test_mask)
-    print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Test MSE: {test_mse:.4f}')
+    print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
+    evaluate_epss_prediction(data['label'].test_mask)
