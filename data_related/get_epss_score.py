@@ -9,7 +9,7 @@ import os
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer as wnl
-import json
+import json, math
 
 ### Everything after here is about modifying the CVE data ###
 
@@ -155,7 +155,23 @@ def get_epss_scores(cve_ids: list[str]): #gets_all_scores
 
     return epss_scores_list
 
+def get_logarithmic_epss_score():
+    epss_scores = []
+    with open('epss_score_final.csv') as final_epss_file:
+        readCSV = csv.reader(final_epss_file, delimiter=',')
+    
+        for row in readCSV:
+            epss_score = row[1]
+            if epss_score < 0.1:
+                epss_score = round(math.log(epss_score), 0)
+            else:
+                epss_score = round(epss_score*10, 0)
 
+            epss_scores.append(epss_score)
+
+    return epss_scores
+
+            
 
 ### Removes from both EPSS list and CVE dictionary ###
 
