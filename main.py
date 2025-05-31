@@ -92,10 +92,10 @@ def evaluate_epss_prediction(mask):
         else:
             threshold = 0.1 * t  # 10%
         if diff <= threshold:
-            print(diff, threshold)
+            #print(diff, threshold)
             hits.append(diff)
 
-    print(hits, all_diffs)
+    #print(hits, all_diffs)
     return {
         "hit_rate": np.mean(hits),
         "average_difference": np.mean(all_diffs),
@@ -130,4 +130,4 @@ for epoch in range(1, 101):
     validation_mse = test(data['label'].validation_mask)
     test_mse = test(data['label'].test_mask)
     #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
-    evaluate_epss_prediction(data['label'].test_mask)
+    print(evaluate_epss_prediction(data['label'].test_mask))
