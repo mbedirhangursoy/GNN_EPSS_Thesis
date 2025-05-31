@@ -88,7 +88,7 @@ def evaluate_epss_prediction(mask):
         if t > 0.8:
             threshold = 0.1
         elif t < 0.1:
-            threshold = 0.05
+            threshold = 0.04
         else:
             threshold = 0.1 * t  # 10%
         print(diff, threshold)
