@@ -1,10 +1,11 @@
-from sklearn.metrics import confusion_matrix, recall_score, precision_score
+from sklearn.metrics import confusion_matrix, recall_score, precision_score, accuracy_score, classification_report
 from torch_geometric.nn import HeteroConv, GATConv
 from torch.nn import Linear
 import torch.nn.functional as F
 import numpy as np
 import torch, csv
 from data_related.get_epss_score import *
+
 
 
 
@@ -39,6 +40,7 @@ with open('epss_score2.csv') as csvfile:
     for row in readCSV:
         epss_scores.append(float(row[1]))
 
+#epss_scores = get_logarithmic_epss_score()
 
 model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
 
@@ -69,10 +71,39 @@ data['label'].train_mask = train_mask
 data['label'].test_mask = test_mask
 data['label'].validation_mask = validation_mask
 
+def create_classes(value):
+    classes = [-10, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    labels = list(range(len(classes) - 1))
+    bins = pd.cut([value], bins=classes, labels=labels)[0]
+
+    return bins
+
+
+def evaluate_logarithmic_multiclass_prediction(mask):
+    model.eval()
+    out = model(data.x_dict, data.edge_index_dict).squeeze()
+    pred = out[mask]
+    actual = target[mask]
+
+    actual_classes = []
+    pred_classes = []
+
+    for t, o in zip(actual, pred):
+        t = t.item()
+        o = o.item()
+        actual_classes.append(create_classes(t))
+        pred_classes.append(create_classes(o))
+
+    accuracy = accuracy_score(actual_classes, pred_classes)
+    classification = classification_report(actual_classes, pred_classes)
+    confusion_matrix_ = confusion_matrix(actual_classes, pred_classes)
+
+    return accuracy, classification, confusion_matrix_
+
 
 
 def evaluate_epss_prediction(mask):
-  
+    model.eval()
     out = model(data.x_dict, data.edge_index_dict).squeeze()
     pred = out[mask]
     actual = target[mask]
