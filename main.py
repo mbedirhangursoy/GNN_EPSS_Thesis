@@ -97,7 +97,7 @@ def evaluate_logarithmic_multiclass_prediction(mask):
     accuracy = accuracy_score(actual_classes, pred_classes)
     classification = classification_report(actual_classes, pred_classes)
     confusion_matrix_ = confusion_matrix(actual_classes, pred_classes)
-    print(accuracy, classification, confusion_matrix_)
+    
     return accuracy, classification, confusion_matrix_
 
 
@@ -160,7 +160,7 @@ for epoch in range(1, 101):
     test_mse = test(data['label'].test_mask)
     #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
     #print(evaluate_epss_prediction(data['label'].test_mask))
-    accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction
+    accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction()
     print(f'Accuracy {accuracy_log}')
     print(f'Classification {classification_log}')
     print(f'Confusion Matrix {confusion_log}')
