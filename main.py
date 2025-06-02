@@ -34,13 +34,13 @@ class HeteroGNN(torch.nn.Module):
 
 data = torch.load('data_related/my_graph.pt', weights_only=False)
 
-epss_scores = []
+'''epss_scores = []
 with open('epss_score2.csv') as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     for row in readCSV:
-        epss_scores.append(float(row[1]))
+        epss_scores.append(float(row[1]))'''
 
-#epss_scores = get_logarithmic_epss_score()
+epss_scores = get_logarithmic_epss_score()
 
 model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
 
@@ -158,5 +158,10 @@ for epoch in range(1, 101):
     loss = train()
     validation_mse = test(data['label'].validation_mask)
     test_mse = test(data['label'].test_mask)
-    print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
-    print(evaluate_epss_prediction(data['label'].test_mask))
+    #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
+    #print(evaluate_epss_prediction(data['label'].test_mask))
+    accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction
+    print(f'Accuracy {accuracy_log}')
+    print(f'Classification {classification_log}')
+    print(f'Confusion Matrix {confusion_log}')
+
