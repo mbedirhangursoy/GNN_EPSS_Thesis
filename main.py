@@ -91,7 +91,7 @@ def evaluate_logarithmic_multiclass_prediction(mask):
     for t, o in zip(actual, pred):
         t = create_classes(t.item())
         o = create_classes(o.item())
-        if t is None or o is None:
+        if t is 'nan' or o is 'nan':
             continue
         else:
             actual_classes.append(t)
