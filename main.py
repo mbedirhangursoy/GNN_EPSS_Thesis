@@ -97,7 +97,7 @@ def evaluate_logarithmic_multiclass_prediction(mask):
     accuracy = accuracy_score(actual_classes, pred_classes)
     classification = classification_report(actual_classes, pred_classes)
     confusion_matrix_ = confusion_matrix(actual_classes, pred_classes)
-
+    print(accuracy, classification, confusion_matrix_)
     return accuracy, classification, confusion_matrix_
 
 
