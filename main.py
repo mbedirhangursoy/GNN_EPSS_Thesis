@@ -94,6 +94,8 @@ def evaluate_logarithmic_multiclass_prediction(mask):
         actual_classes.append(create_classes(t))
         pred_classes.append(create_classes(o))
 
+
+    print(actual_classes, pred_classes)
     accuracy = accuracy_score(actual_classes, pred_classes)
     classification = classification_report(actual_classes, pred_classes)
     confusion_matrix_ = confusion_matrix(actual_classes, pred_classes)
