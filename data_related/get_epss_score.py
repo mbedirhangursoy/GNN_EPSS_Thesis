@@ -161,7 +161,7 @@ def get_logarithmic_epss_score():
         readCSV = csv.reader(final_epss_file, delimiter=',')
     
         for row in readCSV:
-            epss_score = int(row[1])
+            epss_score = float(row[1])
             if epss_score < 0.1:
                 epss_score = round(math.log(epss_score), 0)
             else:
