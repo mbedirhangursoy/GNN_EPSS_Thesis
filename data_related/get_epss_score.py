@@ -157,7 +157,7 @@ def get_epss_scores(cve_ids: list[str]): #gets_all_scores
 
 def get_logarithmic_epss_score():
     epss_scores = []
-    with open('epss_score_final.csv') as final_epss_file:
+    with open('epss_score2.csv') as final_epss_file:
         readCSV = csv.reader(final_epss_file, delimiter=',')
     
         for row in readCSV:
