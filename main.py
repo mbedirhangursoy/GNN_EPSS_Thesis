@@ -91,8 +91,8 @@ def evaluate_logarithmic_multiclass_prediction(mask):
     for t, o in zip(actual, pred):
         t = t.item()
         o = o.item()
-        actual_classes.append(create_classes(t))
-        pred_classes.append(create_classes(o))
+        actual_classes.append(create_classes(t).item())
+        pred_classes.append(create_classes(o).item())
 
 
     print(actual_classes, pred_classes)
