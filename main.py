@@ -94,9 +94,12 @@ def evaluate_logarithmic_multiclass_prediction(mask):
         actual_classes.append(t)
         pred_classes.append(o)
             
+    with open('logarithmic_actual_pred_output.csv', 'w') as f: #create a csv for the graph
+        writer = csv.writer(f)
+        for actual, pred in zip(actual_classes, pred_classes):
+            writer.writerow([actual, pred])
 
 
-    print(actual_classes, pred_classes)
     accuracy = accuracy_score(actual_classes, pred_classes)
     classification = classification_report(actual_classes, pred_classes)
     confusion_matrix_ = confusion_matrix(actual_classes, pred_classes)
