@@ -72,7 +72,6 @@ data['label'].test_mask = test_mask
 data['label'].validation_mask = validation_mask
 
 
-
 def evaluate_logarithmic_multiclass_prediction(mask):
     model.eval()
     out = model(data.x_dict, data.edge_index_dict).squeeze()

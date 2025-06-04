@@ -171,7 +171,13 @@ def get_logarithmic_epss_score():
 
     return epss_scores
 
-            
+def create_classes(value):
+    classes = [-float('inf'), -10, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, float('inf')]
+    labels = list(range(len(classes) - 1))
+    bins = pd.cut([value], bins=classes, labels=labels)[0]
+
+    return bins
+          
 
 ### Removes from both EPSS list and CVE dictionary ###
 
