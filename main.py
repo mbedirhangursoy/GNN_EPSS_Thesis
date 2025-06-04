@@ -71,12 +71,6 @@ data['label'].train_mask = train_mask
 data['label'].test_mask = test_mask
 data['label'].validation_mask = validation_mask
 
-def create_classes(value):
-    classes = [-float('inf'), -10, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, float('inf')]
-    labels = list(range(len(classes) - 1))
-    bins = pd.cut([value], bins=classes, labels=labels)[0]
-
-    return bins
 
 
 def evaluate_logarithmic_multiclass_prediction(mask):
