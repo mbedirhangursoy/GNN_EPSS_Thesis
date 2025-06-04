@@ -184,7 +184,7 @@ for epoch in range(1, 101):
     test_mse = test(data['label'].test_mask)
     #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
     #print(evaluate_epss_prediction(data['label'].test_mask))
-    accuracy_log, classification_log, confusion_log = train_evaluate_logarithmic_multiclass_prediction(data['label'].train)
+    accuracy_log, classification_log, confusion_log = train_evaluate_logarithmic_multiclass_prediction(data['label'].train_mask)
     evaluate_logarithmic_multiclass_prediction(data['label'].test_mask)
     print(f'Accuracy {accuracy_log}')
     print(f'Classification {classification_log}')
