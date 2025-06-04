@@ -136,9 +136,9 @@ def request_epss_scores(): #requests epss scores
 
 def get_epss_score(cve: str): #gets only one score
 
-    scores = request_epss_scores()
-    '''with open('epss_score.csv') as scores:
-        scores = pd.read_csv(scores)'''
+    #scores = request_epss_scores()
+    with open('epss_score.csv') as scores:
+        scores = pd.read_csv(scores)
     df = pd.DataFrame.from_dict(scores)
     for data, epss_score in zip(df['cve'], df['epss']):
         if cve == data:
