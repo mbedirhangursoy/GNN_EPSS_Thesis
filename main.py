@@ -99,33 +99,6 @@ def evaluate_logarithmic_multiclass_prediction(mask):
 
     return accuracy, classification, confusion_matrix_
 
-def train_evaluate_logarithmic_multiclass_prediction(mask):
-    model.train()
-    out = model(data.x_dict, data.edge_index_dict).squeeze()
-    pred = out[mask]
-    actual = target[mask]
-
-    actual_classes = []
-    pred_classes = []
-
-    for t, o in zip(actual, pred):
-        t = create_classes(t.item())
-        o = create_classes(o.item())
-        actual_classes.append(t)
-        pred_classes.append(o)
-            
-    with open('logarithmic_actual_pred_output.csv', 'w') as f: #create a csv for the graph
-        writer = csv.writer(f)
-        for actual, pred in zip(actual_classes, pred_classes):
-            writer.writerow([actual, pred])
-
-
-    accuracy = accuracy_score(actual_classes, pred_classes)
-    classification = classification_report(actual_classes, pred_classes)
-    confusion_matrix_ = confusion_matrix(actual_classes, pred_classes)
-
-    return accuracy, classification, confusion_matrix_
-
 def evaluate_epss_prediction(mask):
     model.eval()
     out = model(data.x_dict, data.edge_index_dict).squeeze()
@@ -182,11 +155,12 @@ for epoch in range(1, 101):
     loss = train()
     validation_mse = test(data['label'].validation_mask)
     test_mse = test(data['label'].test_mask)
-    #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
-    #print(evaluate_epss_prediction(data['label'].test_mask))
-    accuracy_log, classification_log, confusion_log = train_evaluate_logarithmic_multiclass_prediction(data['label'].train_mask)
-    evaluate_logarithmic_multiclass_prediction(data['label'].test_mask)
-    print(f'Accuracy {accuracy_log}')
-    print(f'Classification {classification_log}')
-    print(f'Confusion Matrix {confusion_log}')
+    print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
+    print(evaluate_epss_prediction(data['label'].test_mask))
+
+accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction(data['label'].test_mask)
+evaluate_logarithmic_multiclass_prediction(data['label'].test_mask)
+print(f'Accuracy {accuracy_log}')
+print(f'Classification {classification_log}')
+print(f'Confusion Matrix {confusion_log}')
 
