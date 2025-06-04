@@ -4,9 +4,9 @@ from sklearn.preprocessing import OneHotEncoder
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from data_related.get_epss_score import *
+from data_related.helper_functions import *
 
-remove_empty_epss_scores(2024, 2025)
+remove_empty_epss_scores(2023, 2025)
 
 with open('h_gnn_output_final.json') as data_values:
     print('opened file and starting to create the graph')

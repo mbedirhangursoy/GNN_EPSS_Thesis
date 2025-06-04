@@ -120,24 +120,29 @@ def request_epss_scores(): #requests epss scores
             df.columns = df.iloc[0]
             df = df.iloc[1:]
             df = df.reset_index()
-            print(df.columns.tolist())
+            print(date_, df.columns.tolist())
             for _, row in df.iterrows(): 
                 cve = row['index'] 
                 epss = row['epss']
 
                 if cve not in epss_dict or float(epss) > epss_dict[cve]:
                     epss_dict[cve] = float(epss)
-    
-    epss_list = [{"cve": cve, "epss": score} for cve, score in epss_dict.items()]
 
-    return epss_list
-
+    with open('epss_score_new.csv', 'w') as f:
+        writer = csv.writer(f)
+        for cve, score in epss_dict.items():
+            writer.writerow([cve, score])
+        
     
+    #epss_list = [{"cve": cve, "epss": score} for cve, score in epss_dict.items()]
+
+    #return epss_list
+
 
 def get_epss_score(cve: str): #gets only one score
 
     #scores = request_epss_scores()
-    with open('epss_score.csv') as scores:
+    with open('epss_score_updated.csv') as scores:
         scores = pd.read_csv(scores)
     df = pd.DataFrame.from_dict(scores)
     for data, epss_score in zip(df['cve'], df['epss']):
@@ -171,7 +176,7 @@ def get_logarithmic_epss_score():
 
     return epss_scores
 
-def create_classes(value):
+def create_classes(value): #for logarithmic score tracking
     classes = [-float('inf'), -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, float('inf')]
     labels = list(range(len(classes) - 1))
     bins = pd.cut([value], bins=classes, labels=labels)[0]
