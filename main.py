@@ -164,3 +164,6 @@ print(f'Accuracy {accuracy_log}')
 print(f'Classification {classification_log}')
 print(f'Confusion Matrix {confusion_log}')
 
+import collections
+print(collections.Counter([create_classes(t.item()) for t in target[train_mask]]))
+
