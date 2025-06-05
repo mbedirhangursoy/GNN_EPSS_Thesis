@@ -4,7 +4,7 @@ from torch.nn import Linear
 import torch.nn.functional as F
 import numpy as np
 import torch, csv
-from data_related.get_epss_score import *
+from data_related.helper_functions import *
 
 
 
