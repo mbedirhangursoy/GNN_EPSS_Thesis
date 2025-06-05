@@ -128,7 +128,7 @@ def request_epss_scores(): #requests epss scores
                 if cve not in epss_dict or float(epss) > epss_dict[cve]:
                     epss_dict[cve] = float(epss)
 
-    with open('epss_score_new.csv', 'w') as f:
+    with open('epss_score_updated.csv', 'w') as f:
         writer = csv.writer(f)
         for cve, score in epss_dict.items():
             writer.writerow([cve, score])
