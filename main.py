@@ -32,7 +32,7 @@ class HeteroGNN(torch.nn.Module):
         return out
 
 
-data = torch.load('data_related/my_fina_graph.pt', weights_only=False)
+data = torch.load('data_related/my_final_graph.pt', weights_only=False)
 
 epss_scores = []
 with open('epss_score_2024_2025_deleted.csv') as csvfile:
