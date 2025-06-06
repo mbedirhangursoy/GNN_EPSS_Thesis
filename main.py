@@ -51,25 +51,21 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 target = torch.tensor(epss_scores, dtype=torch.float)
 
 
-num_nodes = data['label'].num_nodes
-perm = torch.randperm(num_nodes)
+label_node_count = data['label'].num_nodes
+target = torch.tensor(epss_scores[:label_node_count], dtype=torch.float)
 
-train_idx = perm[:int(0.7 * num_nodes)]
-test_idx = perm[int(0.7 * num_nodes):]
-validation_idx = perm
+train_size = int(0.7 * label_node_count)
+train_idx = torch.arange(0, train_size)
+test_idx = torch.arange(train_size, label_node_count)
 
-train_mask = torch.zeros(num_nodes, dtype=torch.bool)
+train_mask = torch.zeros(label_node_count, dtype=torch.bool)
+test_mask = torch.zeros(label_node_count, dtype=torch.bool)
+
 train_mask[train_idx] = True
-
-test_mask = torch.zeros(num_nodes, dtype=torch.bool)
 test_mask[test_idx] = True
-
-validation_mask = torch.zeros(num_nodes, dtype=torch.bool)
-validation_mask[validation_idx] = True
 
 data['label'].train_mask = train_mask
 data['label'].test_mask = test_mask
-data['label'].validation_mask = validation_mask
 
 
 def evaluate_logarithmic_multiclass_prediction(mask, start_year):
