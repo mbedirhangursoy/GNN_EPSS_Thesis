@@ -45,7 +45,7 @@ with open('epss_score_2025_deleted.csv') as csvfile:
 model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
 
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 
 target = torch.tensor(epss_scores, dtype=torch.float)
@@ -203,7 +203,7 @@ plt.grid(True)
 plt.tight_layout()
 
 # Save the figure
-plt.savefig('actual_vs_predicted_2025_0.001.png', dpi=300)
+plt.savefig('actual_vs_predicted_2025_0.01.png', dpi=300)
 plt.show()
 
 
