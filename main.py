@@ -164,7 +164,7 @@ def test(mask, start_year):
 for epoch in range(1, 101):
     loss = train()
     #validation_mse = test(data['label'].validation_mask, 2024)
-    test_mse = test(data['label'].test_mask, 2024)
+    #test_mse = test(data['label'].test_mask, 2024)
     #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
     #print(evaluate_epss_prediction(data['label'].test_mask))
 
