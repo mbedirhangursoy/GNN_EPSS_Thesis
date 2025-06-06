@@ -160,7 +160,7 @@ def get_epss_scores(cve_ids: list[str]): #gets_all_scores
 
     return epss_scores_list
 
-def get_logarithmic_epss_score(file):
+'''def get_logarithmic_epss_score(file):
     epss_scores = []
     with open(file) as final_epss_file:
         readCSV = csv.reader(final_epss_file, delimiter=',')
@@ -181,7 +181,7 @@ def create_classes(value): #for logarithmic score tracking
     labels = list(range(len(classes) - 1))
     bins = pd.cut([value], bins=classes, labels=labels)[0]
 
-    return bins
+    return bins'''
           
 
 ### Removes from both EPSS list and CVE dictionary ###
