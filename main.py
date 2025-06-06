@@ -136,7 +136,7 @@ def train(epoch):
     if epoch == 100:
         for predi, actuali in zip(pred, actual):
             print(predi, actuali)
-    loss = F.mse_loss(pred, actual)
+    loss = F.mse_loss(pred.item(), actual.item())
     loss.backward()
     optimizer.step()
     return loss.item()
