@@ -130,15 +130,16 @@ def evaluate_epss_prediction(mask):
 
 
 
-def train():
+def train(epoch):
     model.train()
     optimizer.zero_grad()
     out = model(data.x_dict, data.edge_index_dict).squeeze()
     pred = out[data['label'].train_mask]
     actual = target[data['label'].train_mask]
 
-    for predi, actuali in zip(pred, actual):
-        print(predi, actuali)
+    if epoch == 100:
+        for predi, actuali in zip(pred, actual):
+            print(predi, actuali)
     loss = F.mse_loss(pred, actual)
     loss.backward()
     optimizer.step()
@@ -163,7 +164,7 @@ def test(mask, start_year):
 
 
 for epoch in range(1, 101):
-    loss = train()
+    loss = train(epoch)
     #validation_mse = test(data['label'].validation_mask, 2024)
     #test_mse = test(data['label'].test_mask, 2024)
     #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
