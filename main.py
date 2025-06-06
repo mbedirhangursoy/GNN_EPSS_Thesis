@@ -148,10 +148,10 @@ def test(mask, start_year):
         mse = F.mse_loss(pred, actual).item()
 
 
-        with open(f'logarithmic_actual_pred_output_{start_year}.csv', 'w') as f: #create a csv for the graph
+        with open(f'test_logarithmic_actual_pred_output_{start_year}.csv', 'w') as f: #create a csv for the graph
             writer = csv.writer(f)
-            for actual, pred in zip(actual, pred):
-                writer.writerow([actual.item(), pred.item()])
+            for actual_item, pred_item in zip(actual, pred):
+                writer.writerow([actual_item.item(), pred_item.item()])
 
 
         return mse
