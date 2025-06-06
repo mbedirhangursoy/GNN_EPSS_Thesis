@@ -156,9 +156,11 @@ for epoch in range(1, 101):
     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
     print(evaluate_epss_prediction(data['label'].test_mask))
 
-accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction(data['label'].test_mask, 2024)
+'''accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction(data['label'].test_mask, 2024)
 print(f'Accuracy {accuracy_log}')
 print(f'Classification {classification_log}')
-print(f'Confusion Matrix {confusion_log}')
+print(f'Confusion Matrix {confusion_log}')'''
+
+evaluate_logarithmic_multiclass_prediction(data['label'].test_mask, 2024)
 
 
