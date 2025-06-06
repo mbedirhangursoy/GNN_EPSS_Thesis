@@ -137,7 +137,8 @@ def train():
     pred = out[data['label'].train_mask]
     actual = target[data['label'].train_mask]
 
-    print(pred, actual)
+    for predi, actuali in zip(pred, actual):
+        print(predi, actuali)
     loss = F.mse_loss(pred, actual)
     loss.backward()
     optimizer.step()
