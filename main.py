@@ -32,10 +32,10 @@ class HeteroGNN(torch.nn.Module):
         return out
 
 
-data = torch.load('data_related/my_final_graph.pt', weights_only=False)
+data = torch.load('data_related/my_graph.pt', weights_only=False)
 
 epss_scores = []
-with open('epss_score_2024_2025_deleted.csv') as csvfile:
+with open('epss_score_2025_deleted.csv') as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     for row in readCSV:
         epss_scores.append(float(row[1]))
@@ -45,31 +45,27 @@ with open('epss_score_2024_2025_deleted.csv') as csvfile:
 model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
 
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 
 target = torch.tensor(epss_scores, dtype=torch.float)
 
 
-num_nodes = data['label'].num_nodes
-perm = torch.randperm(num_nodes)
+label_node_count = data['label'].num_nodes
+target = torch.tensor(epss_scores[:label_node_count], dtype=torch.float)
 
-train_idx = perm[:int(0.7 * num_nodes)]
-test_idx = perm[int(0.7 * num_nodes):]
-validation_idx = perm
+train_size = int(0.7 * label_node_count)
+train_idx = torch.arange(0, train_size)
+test_idx = torch.arange(train_size, label_node_count)
 
-train_mask = torch.zeros(num_nodes, dtype=torch.bool)
+train_mask = torch.zeros(label_node_count, dtype=torch.bool)
+test_mask = torch.zeros(label_node_count, dtype=torch.bool)
+
 train_mask[train_idx] = True
-
-test_mask = torch.zeros(num_nodes, dtype=torch.bool)
 test_mask[test_idx] = True
-
-validation_mask = torch.zeros(num_nodes, dtype=torch.bool)
-validation_mask[validation_idx] = True
 
 data['label'].train_mask = train_mask
 data['label'].test_mask = test_mask
-data['label'].validation_mask = validation_mask
 
 
 def evaluate_logarithmic_multiclass_prediction(mask, start_year):
@@ -130,11 +126,21 @@ def evaluate_epss_prediction(mask):
 
 
 
-def train():
+def train(epoch):
     model.train()
     optimizer.zero_grad()
     out = model(data.x_dict, data.edge_index_dict).squeeze()
-    loss = F.mse_loss(out[data['label'].train_mask], target[data['label'].train_mask])
+    pred = out[data['label'].train_mask]
+    actual = target[data['label'].train_mask]
+
+    if epoch == 100:
+        with open(f'test_logarithmic_actual_pred_output_2024.csv', 'w') as f: #create a csv for the graph
+            writer = csv.writer(f)
+            for predi, actuali in zip(pred, actual):
+                print(predi, actuali, actuali.item(), predi.item())
+                writer.writerow([actuali.item(), predi.item()])
+
+    loss = F.mse_loss(pred, actual)
     loss.backward()
     optimizer.step()
     return loss.item()
@@ -158,11 +164,11 @@ def test(mask, start_year):
 
 
 for epoch in range(1, 101):
-    loss = train()
+    loss = train(epoch)
     #validation_mse = test(data['label'].validation_mask, 2024)
-    test_mse = test(data['label'].test_mask, 2024)
-    print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {test_mse:.4f}, Test MSE: {test_mse:.4f}')
-    print(evaluate_epss_prediction(data['label'].test_mask))
+    #test_mse = test(data['label'].test_mask, 2024)
+    #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
+    #print(evaluate_epss_prediction(data['label'].test_mask))
 
 '''accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction(data['label'].test_mask, 2024)
 print(f'Accuracy {accuracy_log}')
