@@ -82,10 +82,8 @@ def evaluate_logarithmic_multiclass_prediction(mask):
     pred_classes = []
 
     for t, o in zip(actual, pred):
-        t = create_classes(t.item())
-        o = create_classes(o.item())
-        actual_classes.append(t)
-        pred_classes.append(o)
+        actual_classes.append(t.item())
+        pred_classes.append(o.item())
             
     with open('logarithmic_actual_pred_output.csv', 'w') as f: #create a csv for the graph
         writer = csv.writer(f)
