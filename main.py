@@ -134,7 +134,11 @@ def train():
     model.train()
     optimizer.zero_grad()
     out = model(data.x_dict, data.edge_index_dict).squeeze()
-    loss = F.mse_loss(out[data['label'].train_mask], target[data['label'].train_mask])
+    pred = out[data['label'].train_mask]
+    actual = target[data['label'].train_mask]
+
+    print(pred, actual)
+    loss = F.mse_loss(pred, actual)
     loss.backward()
     optimizer.step()
     return loss.item()
@@ -161,8 +165,8 @@ for epoch in range(1, 101):
     loss = train()
     #validation_mse = test(data['label'].validation_mask, 2024)
     test_mse = test(data['label'].test_mask, 2024)
-    print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {test_mse:.4f}, Test MSE: {test_mse:.4f}')
-    print(evaluate_epss_prediction(data['label'].test_mask))
+    #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
+    #print(evaluate_epss_prediction(data['label'].test_mask))
 
 '''accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction(data['label'].test_mask, 2024)
 print(f'Accuracy {accuracy_log}')
