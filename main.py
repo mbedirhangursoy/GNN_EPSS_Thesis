@@ -126,7 +126,7 @@ def evaluate_epss_prediction(mask):
 
 
 
-def train(epoch):
+def train(epoch, start_year):
     model.train()
     optimizer.zero_grad()
     out = model(data.x_dict, data.edge_index_dict).squeeze()
@@ -134,7 +134,7 @@ def train(epoch):
     actual = target[data['label'].train_mask]
 
     if epoch == 100:
-        with open(f'test_logarithmic_actual_pred_output_2024.csv', 'w') as f: #create a csv for the graph
+        with open(f'test_logarithmic_actual_pred_output_{start_year}.csv', 'w') as f: #create a csv for the graph
             writer = csv.writer(f)
             for predi, actuali in zip(pred, actual):
                 print(predi, actuali, actuali.item(), predi.item())
@@ -164,7 +164,7 @@ def test(mask, start_year):
 
 
 for epoch in range(1, 101):
-    loss = train(epoch)
+    loss = train(epoch, 2025)
     #validation_mse = test(data['label'].validation_mask, 2024)
     #test_mse = test(data['label'].test_mask, 2024)
     #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
@@ -174,5 +174,36 @@ for epoch in range(1, 101):
 print(f'Accuracy {accuracy_log}')
 print(f'Classification {classification_log}')
 print(f'Confusion Matrix {confusion_log}')'''
+
+
+import matplotlib.pyplot as plt
+import csv
+
+# Load actual and predicted values from a CSV
+actual = []
+predicted = []
+
+with open('test_logarithmic_actual_pred_output_2025.csv', 'r') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        actual.append(float(row[0]))
+        predicted.append(float(row[1]))
+
+# Plot
+plt.figure(figsize=(10, 6))
+plt.scatter(actual, predicted, color='blue', alpha=0.6, edgecolors='k', label='Actual vs. Predicted')
+plt.plot([0, 1], [0, 1], 'r--', label='Perfect Prediction')  # Diagonal line
+
+# Labels and formatting
+plt.xlabel('Actual Values')
+plt.ylabel('Predicted Values')
+plt.title('Actual vs. Predicted Values')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+
+# Save the figure
+plt.savefig('actual_vs_predicted_2025_0.001.png', dpi=300)
+plt.show()
 
 
