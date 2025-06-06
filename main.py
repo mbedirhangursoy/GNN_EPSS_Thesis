@@ -134,9 +134,12 @@ def train(epoch):
     actual = target[data['label'].train_mask]
 
     if epoch == 100:
-        for predi, actuali in zip(pred, actual):
-            print(predi, actuali)
-    loss = F.mse_loss(pred.item(), actual.item())
+        with open(f'test_logarithmic_actual_pred_output_2024.csv', 'w') as f: #create a csv for the graph
+            writer = csv.writer(f)
+            for predi, actuali in zip(pred, actual):
+                writer.writerow([actuali.item(), predi.item()])
+
+    loss = F.mse_loss(pred, actual)
     loss.backward()
     optimizer.step()
     return loss.item()
