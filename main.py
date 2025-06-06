@@ -45,7 +45,7 @@ with open('epss_score_2025_deleted.csv') as csvfile:
 model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
 
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 
 target = torch.tensor(epss_scores, dtype=torch.float)
