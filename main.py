@@ -32,10 +32,10 @@ class HeteroGNN(torch.nn.Module):
         return out
 
 
-data = torch.load('data_related/my_final_graph.pt', weights_only=False)
+data = torch.load('data_related/my_graph.pt', weights_only=False)
 
 epss_scores = []
-with open('epss_score_2024_2025_deleted.csv') as csvfile:
+with open('epss_score_2025_deleted.csv') as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     for row in readCSV:
         epss_scores.append(float(row[1]))
@@ -45,7 +45,7 @@ with open('epss_score_2024_2025_deleted.csv') as csvfile:
 model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
 
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 
 target = torch.tensor(epss_scores, dtype=torch.float)
@@ -164,7 +164,7 @@ def test(mask, start_year):
 
 
 for epoch in range(1, 101):
-    loss = train(epoch, 2024)
+    loss = train(epoch, 2025)
     #validation_mse = test(data['label'].validation_mask, 2024)
     #test_mse = test(data['label'].test_mask, 2024)
     #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
@@ -183,7 +183,7 @@ import csv
 actual = []
 predicted = []
 
-with open('test_logarithmic_actual_pred_output_2024.csv', 'r') as f:
+with open('test_logarithmic_actual_pred_output_2025.csv', 'r') as f:
     reader = csv.reader(f)
     for row in reader:
         actual.append(float(row[0]))
@@ -203,5 +203,5 @@ plt.grid(True)
 plt.tight_layout()
 
 # Save the figure
-plt.savefig('actual_vs_predicted_2024_0.001_epo1001.png', dpi=300)
+plt.savefig('actual_vs_predicted_2025_0.01_epo101_retry.png', dpi=300)
 plt.show()
