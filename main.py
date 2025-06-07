@@ -163,7 +163,7 @@ def test(mask, start_year):
         return mse
 
 
-for epoch in range(1, 101):
+for epoch in range(1, 1001):
     loss = train(epoch, 2025)
     #validation_mse = test(data['label'].validation_mask, 2024)
     #test_mse = test(data['label'].test_mask, 2024)
@@ -203,5 +203,5 @@ plt.grid(True)
 plt.tight_layout()
 
 # Save the figure
-plt.savefig('actual_vs_predicted_2025_0.1.png', dpi=300)
+plt.savefig('actual_vs_predicted_2025_0.1_epo1001.png', dpi=300)
 plt.show()
