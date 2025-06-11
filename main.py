@@ -58,7 +58,7 @@ with open('epss_score_2025_deleted.csv') as csvfile:
 
 model = HeteroGNN(hidden_dim=128, out_dim=1, metadata=data.metadata(), dropout_rate=0.3)
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.005, weight_decay=1e-4)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
 
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.5)
 
