@@ -21,7 +21,7 @@ class HeteroGNN(torch.nn.Module):
         }, aggr='sum')
 
 
-        self.lin1 = Linear(hidden_dim, hidden_dim)
+        self.lin1 = Linear(hidden_dim, out_dim)
 
         self.metadata = metadata
 
