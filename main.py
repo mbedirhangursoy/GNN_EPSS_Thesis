@@ -163,11 +163,11 @@ def test(mask, start_year):
         return mse
 
 
-for epoch in range(1, 1001):
+for epoch in range(1, 101):
     loss = train(epoch, 2025)
-    #validation_mse = test(data['label'].validation_mask, 2024)
+    validation_mse = test(data['label'].validation_mask, 2024)
     test_mse = test(data['label'].test_mask, 2025)
-    #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
+    print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
     #print(evaluate_epss_prediction(data['label'].test_mask))
 
 '''accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction(data['label'].test_mask, 2024)
@@ -179,48 +179,73 @@ print(f'Confusion Matrix {confusion_log}')'''
 import matplotlib.pyplot as plt
 import csv
 
-# Load actual and predicted values from a CSV
-actual = []
-predicted = []
+def save_actual_pred_csv(mask, filename):
+    model.eval()
+    with torch.no_grad():
+        out = model(data.x_dict, data.edge_index_dict).squeeze()
+        pred = out[mask]
+        actual = target[mask]
 
-with open('test_logarithmic_actual_pred_output_2025.csv', 'r') as f:
-    reader = csv.reader(f)
-    for row in reader:
-        actual.append(float(row[0]))
-        predicted.append(float(row[1]))
-
-#Non Zoomed
-plt.figure(figsize=(10, 6))
-plt.scatter(actual, predicted, color='blue', alpha=0.6, edgecolors='k', label='Actual vs. Predicted')
-plt.plot([0, 1], [0, 1], 'r--', label='Perfect Prediction')  # Diagonal line
-
-plt.xlabel('Actual Values')
-plt.ylabel('Predicted Values')
-plt.title('Actual vs. Predicted Values')
-plt.legend()
-plt.grid(True)
-plt.tight_layout()
+        with open(filename, 'w') as f:
+            writer = csv.writer(f)
+            for a, p in zip(actual, pred):
+                writer.writerow([a.item(), p.item()])
 
 
-plt.savefig('actual_vs_predicted_2025_0.01_wednesday.png', dpi=300)
-plt.show()
 
-#Zoomed
-plt.figure(figsize=(10, 6))
-plt.scatter(actual, predicted, color='blue', alpha=0.6, edgecolors='k', label='Actual vs. Predicted')
-plt.plot([0, 0.1], [0, 0.1], 'r--', label='Perfect Prediction')  # Diagonal line
-
-plt.xlim(0, 0.1)
-plt.ylim(0, 0.1)
-
-plt.xlabel('Actual Values')
-plt.ylabel('Predicted Values')
-plt.title('Actual vs. Predicted Values')
-plt.legend()
-plt.grid(True)
-plt.tight_layout()
+save_actual_pred_csv(data['label'].train_mask, 'train_actual_pred_2025.csv')
+save_actual_pred_csv(data['label'].validation_mask, 'validation_actual_pred_2025.csv')
+save_actual_pred_csv(data['label'].test_mask, 'test_actual_pred_2025.csv')
 
 
-plt.savefig('actual_vs_predicted_2025_0.01_zoomedto0.1.png', dpi=300)
-plt.show()
+def load_csv_to_lists(filename):
+    actual, predicted = [], []
+    with open(filename, 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            actual.append(float(row[0]))
+            predicted.append(float(row[1]))
+    return actual, predicted
+
+
+
+def plot_actual_vs_predicted(actual, predicted, title, file_prefix):
+    # Non-Zoomed
+    plt.figure(figsize=(10, 6))
+    plt.scatter(actual, predicted, color='blue', alpha=0.6, edgecolors='k', label='Actual vs. Predicted')
+    plt.plot([0, 1], [0, 1], 'r--', label='Perfect Prediction')
+    plt.xlabel('Actual Values')
+    plt.ylabel('Predicted Values')
+    plt.title(f'{title} - Full Range')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(f'{file_prefix}_full.png', dpi=300)
+    plt.show()
+
+    # Zoomed
+    plt.figure(figsize=(10, 6))
+    plt.scatter(actual, predicted, color='blue', alpha=0.6, edgecolors='k', label='Actual vs. Predicted')
+    plt.plot([0, 0.1], [0, 0.1], 'r--', label='Perfect Prediction')
+    plt.xlim(0, 0.1)
+    plt.ylim(0, 0.1)
+    plt.xlabel('Actual Values')
+    plt.ylabel('Predicted Values')
+    plt.title(f'{title} - Zoomed (0 to 0.1)')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(f'{file_prefix}_zoomed.png', dpi=300)
+    plt.show()
+
+
+
+train_actual, train_pred = load_csv_to_lists('train_actual_pred_2025.csv')
+val_actual, val_pred = load_csv_to_lists('validation_actual_pred_2025.csv')
+test_actual, test_pred = load_csv_to_lists('test_actual_pred_2025.csv')
+
+plot_actual_vs_predicted(train_actual, train_pred, "Train Set", "train_pred_2025")
+plot_actual_vs_predicted(val_actual, val_pred, "Validation Set", "validation_pred_2025")
+plot_actual_vs_predicted(test_actual, test_pred, "Test Set", "test_pred_2025")
+
 
