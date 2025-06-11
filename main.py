@@ -20,17 +20,15 @@ class HeteroGNN(torch.nn.Module):
             ('attribute', 'rev_to', 'label'): GATConv((-1, -1), hidden_dim, add_self_loops=False)
         }, aggr='sum')
 
-
-        self.lin1 = Linear(hidden_dim, out_dim)
-
+        self.lin = Linear(hidden_dim, out_dim)
         self.metadata = metadata
 
     def forward(self, x_dict, edge_index_dict):
         x_dict = self.conv1(x_dict, edge_index_dict)
+
         x_dict = {key: F.relu(x) for key, x in x_dict.items()}
 
-        x = x_dict['label']
-        out = self.lin1(x)
+        out = self.lin(x_dict['label'])
         return out
 
 
@@ -44,9 +42,10 @@ with open('epss_score_2025_deleted.csv') as csvfile:
 
 #epss_scores = get_logarithmic_epss_score('epss_score_2024_2025_deleted.csv')
 
-model = HeteroGNN(hidden_dim=128, out_dim=1, metadata=data.metadata())
+model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.02)
+
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 
 target = torch.tensor(epss_scores, dtype=torch.float)
@@ -253,5 +252,4 @@ test_actual, test_pred = load_csv_to_lists('test_actual_pred_output.csv')
 plot_actual_vs_predicted(train_actual, train_pred, "Train Set", "train_pred_2025")
 plot_actual_vs_predicted(val_actual, val_pred, "Validation Set", "validation_pred_2025")
 plot_actual_vs_predicted(test_actual, test_pred, "Test Set", "test_pred_2025")
-
 
