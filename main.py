@@ -42,7 +42,7 @@ with open('epss_score_2025_deleted.csv') as csvfile:
 
 #epss_scores = get_logarithmic_epss_score('epss_score_2024_2025_deleted.csv')
 
-model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
+model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
 
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
@@ -143,9 +143,6 @@ def train(epoch):
     pred_test = out[data['label'].test_mask]
     actual_test = target[data['label'].test_mask]
 
-    loss = F.mse_loss(pred, actual)
-    loss.backward()
-    optimizer.step()
 
     if epoch == 100:
         with open(f'train_actual_pred_output.csv', 'w') as f: #create a csv for the graph for train data
@@ -157,19 +154,17 @@ def train(epoch):
         with open(f'valid_actual_pred_output.csv', 'w') as f: #create a csv for the graph for validation data
             writer = csv.writer(f)
             for predi, actuali in zip(pred_val, actual_val):
-                print(predi, actuali, actuali.item(), predi.item())
                 writer.writerow([actuali.item(), predi.item()])
 
         with open(f'test_actual_pred_output.csv', 'w') as f: #create a csv for the graph for test data
             writer = csv.writer(f)
             for predi, actuali in zip(pred_test, actual_test):
-                print(predi, actuali, actuali.item(), predi.item())
                 writer.writerow([actuali.item(), predi.item()])
 
         
-
-        
-
+    loss = F.mse_loss(pred, actual)
+    loss.backward()
+    optimizer.step()
 
     return loss.item()
 
