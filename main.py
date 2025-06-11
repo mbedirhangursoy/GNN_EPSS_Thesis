@@ -58,8 +58,6 @@ model = HeteroGNN(hidden_dim=128, out_dim=1, metadata=data.metadata())
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
 
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.5)
-
 
 target = torch.tensor(epss_scores, dtype=torch.float)
 
@@ -205,7 +203,6 @@ for epoch in range(1, 101):
     #test_mse = test(data['label'].test_mask, 2025)
     #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
     #print(evaluate_epss_prediction(data['label'].test_mask))
-    scheduler.step()
 
 '''accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction(data['label'].test_mask, 2024)
 print(f'Accuracy {accuracy_log}')
