@@ -20,15 +20,29 @@ class HeteroGNN(torch.nn.Module):
             ('attribute', 'rev_to', 'label'): GATConv((-1, -1), hidden_dim, add_self_loops=False)
         }, aggr='sum')
 
-        self.lin = Linear(hidden_dim, out_dim)
+        self.conv2 = HeteroConv({
+            ('label', 'to', 'attribute'): GATConv((-1, -1), hidden_dim, add_self_loops=False),
+            ('attribute', 'rev_to', 'label'): GATConv((-1, -1), hidden_dim, add_self_loops=False)
+        }, aggr='sum')
+
+
+        self.lin1 = Linear(hidden_dim, hidden_dim)
+        self.lin2 = Linear(hidden_dim, out_dim)
+
+        self.dropout_rate = dropout_rate
         self.metadata = metadata
 
     def forward(self, x_dict, edge_index_dict):
         x_dict = self.conv1(x_dict, edge_index_dict)
-
         x_dict = {key: F.relu(x) for key, x in x_dict.items()}
 
-        out = self.lin(x_dict['label'])
+        x_dict = self.conv2(x_dict, edge_index_dict)
+        x_dict = {key: F.relu(x) for key, x in x_dict.items()}
+
+        x = x_dict['label']
+        x = F.dropout(x, p=self.dropout_rate, training=self.training)
+        x = F.relu(self.lin1(x))
+        out = self.lin2(x)
         return out
 
 
@@ -42,10 +56,11 @@ with open('epss_score_2025_deleted.csv') as csvfile:
 
 #epss_scores = get_logarithmic_epss_score('epss_score_2024_2025_deleted.csv')
 
-model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
+model = HeteroGNN(hidden_dim=128, out_dim=1, metadata=data.metadata(), dropout_rate=0.3)
 
+optimizer = torch.optim.Adam(model.parameters(), lr=0.005, weight_decay=1e-4)
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.5)
 
 
 target = torch.tensor(epss_scores, dtype=torch.float)
@@ -192,6 +207,7 @@ for epoch in range(1, 101):
     #test_mse = test(data['label'].test_mask, 2025)
     #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
     #print(evaluate_epss_prediction(data['label'].test_mask))
+    scheduler.step()
 
 '''accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction(data['label'].test_mask, 2024)
 print(f'Accuracy {accuracy_log}')
