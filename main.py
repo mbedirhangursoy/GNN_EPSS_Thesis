@@ -29,6 +29,7 @@ class HeteroGNN(torch.nn.Module):
         x_dict = self.conv1(x_dict, edge_index_dict)
         x_dict = {key: F.relu(x) for key, x in x_dict.items()}
 
+        x = x_dict['label']
         out = self.lin1(x)
         return out
 
@@ -45,7 +46,7 @@ with open('epss_score_2025_deleted.csv') as csvfile:
 
 model = HeteroGNN(hidden_dim=128, out_dim=1, metadata=data.metadata())
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.02)
 
 
 target = torch.tensor(epss_scores, dtype=torch.float)
