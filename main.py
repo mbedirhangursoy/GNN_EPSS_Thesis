@@ -20,14 +20,8 @@ class HeteroGNN(torch.nn.Module):
             ('attribute', 'rev_to', 'label'): GATConv((-1, -1), hidden_dim, add_self_loops=False)
         }, aggr='sum')
 
-        self.conv2 = HeteroConv({
-            ('label', 'to', 'attribute'): GATConv((-1, -1), hidden_dim, add_self_loops=False),
-            ('attribute', 'rev_to', 'label'): GATConv((-1, -1), hidden_dim, add_self_loops=False)
-        }, aggr='sum')
-
 
         self.lin1 = Linear(hidden_dim, hidden_dim)
-        self.lin2 = Linear(hidden_dim, out_dim)
 
         self.metadata = metadata
 
@@ -35,12 +29,7 @@ class HeteroGNN(torch.nn.Module):
         x_dict = self.conv1(x_dict, edge_index_dict)
         x_dict = {key: F.relu(x) for key, x in x_dict.items()}
 
-        x_dict = self.conv2(x_dict, edge_index_dict)
-        x_dict = {key: F.relu(x) for key, x in x_dict.items()}
-
-        x = x_dict['label']
-        x = F.relu(self.lin1(x))
-        out = self.lin2(x)
+        out = self.lin1(x)
         return out
 
 
@@ -56,7 +45,7 @@ with open('epss_score_2025_deleted.csv') as csvfile:
 
 model = HeteroGNN(hidden_dim=128, out_dim=1, metadata=data.metadata())
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 
 target = torch.tensor(epss_scores, dtype=torch.float)
