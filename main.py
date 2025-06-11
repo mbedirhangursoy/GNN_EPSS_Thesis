@@ -133,12 +133,12 @@ def train(epoch, start_year):
     pred = out[data['label'].train_mask]
     actual = target[data['label'].train_mask]
 
-    if epoch == 100:
+    '''if epoch == 100:
         with open(f'test_logarithmic_actual_pred_output_{start_year}.csv', 'w') as f: #create a csv for the graph
             writer = csv.writer(f)
             for predi, actuali in zip(pred, actual):
                 print(predi, actuali, actuali.item(), predi.item())
-                writer.writerow([actuali.item(), predi.item()])
+                writer.writerow([actuali.item(), predi.item()])'''
 
     loss = F.mse_loss(pred, actual)
     loss.backward()
@@ -166,7 +166,7 @@ def test(mask, start_year):
 for epoch in range(1, 101):
     loss = train(epoch, 2025)
     #validation_mse = test(data['label'].validation_mask, 2024)
-    #test_mse = test(data['label'].test_mask, 2024)
+    test_mse = test(data['label'].test_mask, 2025)
     #print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
     #print(evaluate_epss_prediction(data['label'].test_mask))
 
