@@ -12,7 +12,7 @@ from data_related.helper_functions import *
 
 #model
 class HeteroGNN(torch.nn.Module):
-    def __init__(self, hidden_dim, out_dim, metadata, dropout_rate):
+    def __init__(self, hidden_dim, out_dim, metadata):
         super().__init__()
 
         self.conv1 = HeteroConv({
@@ -29,7 +29,6 @@ class HeteroGNN(torch.nn.Module):
         self.lin1 = Linear(hidden_dim, hidden_dim)
         self.lin2 = Linear(hidden_dim, out_dim)
 
-        self.dropout_rate = dropout_rate
         self.metadata = metadata
 
     def forward(self, x_dict, edge_index_dict):
@@ -40,7 +39,6 @@ class HeteroGNN(torch.nn.Module):
         x_dict = {key: F.relu(x) for key, x in x_dict.items()}
 
         x = x_dict['label']
-        x = F.dropout(x, p=self.dropout_rate, training=self.training)
         x = F.relu(self.lin1(x))
         out = self.lin2(x)
         return out
@@ -56,7 +54,7 @@ with open('epss_score_2025_deleted.csv') as csvfile:
 
 #epss_scores = get_logarithmic_epss_score('epss_score_2024_2025_deleted.csv')
 
-model = HeteroGNN(hidden_dim=128, out_dim=1, metadata=data.metadata(), dropout_rate=0.3)
+model = HeteroGNN(hidden_dim=128, out_dim=1, metadata=data.metadata())
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
 
