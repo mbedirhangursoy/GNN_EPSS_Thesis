@@ -192,8 +192,10 @@ with open('test_logarithmic_actual_pred_output_2025.csv', 'r') as f:
 
 plt.figure(figsize=(10, 6))
 plt.scatter(actual, predicted, color='blue', alpha=0.6, edgecolors='k', label='Actual vs. Predicted')
-plt.plot([0, 0.1], [0, 0.1], 'r--', label='Perfect Prediction')  # Diagonal line
+plt.plot([0, 1], [0, 1], 'r--', label='Perfect Prediction')  # Diagonal line
 
+plt.xlim(0, 0.1)
+plt.ylim(0, 0.1)
 
 plt.xlabel('Actual Values')
 plt.ylabel('Predicted Values')
