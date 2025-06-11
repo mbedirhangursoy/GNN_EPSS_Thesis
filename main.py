@@ -192,7 +192,7 @@ with open('test_logarithmic_actual_pred_output_2025.csv', 'r') as f:
 
 plt.figure(figsize=(10, 6))
 plt.scatter(actual, predicted, color='blue', alpha=0.6, edgecolors='k', label='Actual vs. Predicted')
-plt.plot([0, 1], [0, 1], 'r--', label='Perfect Prediction')  # Diagonal line
+plt.plot([0, 0.1], [0, 0.1], 'r--', label='Perfect Prediction')  # Diagonal line
 
 
 plt.xlabel('Actual Values')
@@ -203,12 +203,6 @@ plt.grid(True)
 plt.tight_layout()
 
 
-plt.savefig('actual_vs_predicted_2025_0.01_retry_withhisto.png', dpi=300)
-plt.show()
-
-plt.hist(epss_scores, bins=50)
-plt.title("EPSS Score Distribution")
-plt.savefig('histogram.png', dpi=300)
-plt.show()
+plt.savefig('actual_vs_predicted_2025_0.01_to0.1.png', dpi=300)
 plt.show()
 
