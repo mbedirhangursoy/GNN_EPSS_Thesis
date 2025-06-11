@@ -12,7 +12,7 @@ from data_related.helper_functions import *
 
 #model
 class HeteroGNN(torch.nn.Module):
-    def __init__(self, hidden_dim, out_dim, metadata):
+    def __init__(self, hidden_dim, out_dim, metadata, dropout_rate):
         super().__init__()
 
         self.conv1 = HeteroConv({
