@@ -130,23 +130,47 @@ def evaluate_epss_prediction(mask):
 
 
 
-def train(epoch, start_year):
+def train(epoch):
     model.train()
     optimizer.zero_grad()
     out = model(data.x_dict, data.edge_index_dict).squeeze()
     pred = out[data['label'].train_mask]
     actual = target[data['label'].train_mask]
 
-    '''if epoch == 100:
-        with open(f'test_logarithmic_actual_pred_output_{start_year}.csv', 'w') as f: #create a csv for the graph
-            writer = csv.writer(f)
-            for predi, actuali in zip(pred, actual):
-                print(predi, actuali, actuali.item(), predi.item())
-                writer.writerow([actuali.item(), predi.item()])'''
+    pred_val = out[data['label'].validation_mask]
+    actual_val = target[data['label'].validation_mask]
+
+    pred_test = out[data['label'].test_mask]
+    actual_test = target[data['label'].test_mask]
 
     loss = F.mse_loss(pred, actual)
     loss.backward()
     optimizer.step()
+
+    if epoch == 100:
+        with open(f'train_actual_pred_output.csv', 'w') as f: #create a csv for the graph for train data
+            writer = csv.writer(f)
+            for predi, actuali in zip(pred, actual):
+                print(predi, actuali, actuali.item(), predi.item())
+                writer.writerow([actuali.item(), predi.item()])
+
+        with open(f'valid_actual_pred_output.csv', 'w') as f: #create a csv for the graph for validation data
+            writer = csv.writer(f)
+            for predi, actuali in zip(pred_val, actual_val):
+                print(predi, actuali, actuali.item(), predi.item())
+                writer.writerow([actuali.item(), predi.item()])
+
+        with open(f'test_actual_pred_output.csv', 'w') as f: #create a csv for the graph for test data
+            writer = csv.writer(f)
+            for predi, actuali in zip(pred_test, actual_test):
+                print(predi, actuali, actuali.item(), predi.item())
+                writer.writerow([actuali.item(), predi.item()])
+
+        
+
+        
+
+
     return loss.item()
 
 def test(mask, start_year):
@@ -168,7 +192,7 @@ def test(mask, start_year):
 
 
 for epoch in range(1, 101):
-    loss = train(epoch, 2025)
+    loss = train(epoch)
     validation_mse = test(data['label'].validation_mask, 2024)
     test_mse = test(data['label'].test_mask, 2025)
     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
@@ -181,25 +205,7 @@ print(f'Confusion Matrix {confusion_log}')'''
 
 
 import matplotlib.pyplot as plt
-import csv
 
-def save_actual_pred_csv(mask, filename):
-    model.eval()
-    with torch.no_grad():
-        out = model(data.x_dict, data.edge_index_dict).squeeze()
-        pred = out[mask]
-        actual = target[mask]
-
-        with open(filename, 'w') as f:
-            writer = csv.writer(f)
-            for a, p in zip(actual, pred):
-                writer.writerow([a.item(), p.item()])
-
-
-
-save_actual_pred_csv(data['label'].train_mask, 'train_actual_pred_2025.csv')
-save_actual_pred_csv(data['label'].validation_mask, 'validation_actual_pred_2025.csv')
-save_actual_pred_csv(data['label'].test_mask, 'test_actual_pred_2025.csv')
 
 
 def load_csv_to_lists(filename):
@@ -244,9 +250,9 @@ def plot_actual_vs_predicted(actual, predicted, title, file_prefix):
 
 
 
-train_actual, train_pred = load_csv_to_lists('train_actual_pred_2025.csv')
-val_actual, val_pred = load_csv_to_lists('validation_actual_pred_2025.csv')
-test_actual, test_pred = load_csv_to_lists('test_actual_pred_2025.csv')
+train_actual, train_pred = load_csv_to_lists('train_actual_pred_output.csv')
+val_actual, val_pred = load_csv_to_lists('valid_actual_pred_output.csv')
+test_actual, test_pred = load_csv_to_lists('test_actual_pred_output.csv')
 
 plot_actual_vs_predicted(train_actual, train_pred, "Train Set", "train_pred_2025")
 plot_actual_vs_predicted(val_actual, val_pred, "Validation Set", "validation_pred_2025")
