@@ -167,12 +167,12 @@ def test(mask, epoch):
 
 
         if epoch == 30:
-            if mask == data['label'].validation_mask:
+            if mask is data['label'].validation_mask:
                 with open(f'valid_actual_pred_output.csv', 'w') as f: #create a csv for the graph for validation data
                     writer = csv.writer(f)
                     for predi, actuali in zip(pred, actual):
                         writer.writerow([actuali.item(), predi.item()])
-            elif mask == data['label'].test_mask:
+            elif mask is data['label'].test_mask:
                 with open(f'test_actual_pred_output.csv', 'w') as f: #create a csv for the graph for test data
                     writer = csv.writer(f)
                     for predi, actuali in zip(pred, actual):
