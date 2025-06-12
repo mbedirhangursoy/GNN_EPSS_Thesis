@@ -144,7 +144,7 @@ def train(epoch):
     actual_test = target[data['label'].test_mask]
 
 
-    if epoch == 100:
+    if epoch == 30:
         with open(f'train_actual_pred_output.csv', 'w') as f: #create a csv for the graph for train data
             writer = csv.writer(f)
             for predi, actuali in zip(pred, actual):
