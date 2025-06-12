@@ -148,17 +148,6 @@ def train(epoch):
         with open(f'train_actual_pred_output.csv', 'w') as f: #create a csv for the graph for train data
             writer = csv.writer(f)
             for predi, actuali in zip(pred, actual):
-                print(predi, actuali, actuali.item(), predi.item())
-                writer.writerow([actuali.item(), predi.item()])
-
-        with open(f'valid_actual_pred_output.csv', 'w') as f: #create a csv for the graph for validation data
-            writer = csv.writer(f)
-            for predi, actuali in zip(pred_val, actual_val):
-                writer.writerow([actuali.item(), predi.item()])
-
-        with open(f'test_actual_pred_output.csv', 'w') as f: #create a csv for the graph for test data
-            writer = csv.writer(f)
-            for predi, actuali in zip(pred_test, actual_test):
                 writer.writerow([actuali.item(), predi.item()])
 
         
@@ -168,7 +157,7 @@ def train(epoch):
 
     return loss.item()
 
-def test(mask, start_year):
+def test(mask, epoch):
     model.eval()
     with torch.no_grad():
         out = model(data.x_dict, data.edge_index_dict).squeeze()
@@ -177,19 +166,25 @@ def test(mask, start_year):
         mse = F.mse_loss(pred, actual).item()
 
 
-        '''with open(f'test_logarithmic_actual_pred_output_{start_year}.csv', 'w') as f: #create a csv for the graph
-            writer = csv.writer(f)
-            for actual_item, pred_item in zip(actual, pred):
-                writer.writerow([actual_item.item(), pred_item.item()])'''
-
+        if epoch == 30:
+            if mask == data['label'].validation_mask:
+                with open(f'valid_actual_pred_output.csv', 'w') as f: #create a csv for the graph for validation data
+                    writer = csv.writer(f)
+                    for predi, actuali in zip(pred, actual):
+                        writer.writerow([actuali.item(), predi.item()])
+            elif mask == data['label'].test_mask:
+                with open(f'test_actual_pred_output.csv', 'w') as f: #create a csv for the graph for test data
+                    writer = csv.writer(f)
+                    for predi, actuali in zip(pred, actual):
+                        writer.writerow([actuali.item(), predi.item()])
 
         return mse
 
 
 for epoch in range(1, 31):
     loss = train(epoch)
-    validation_mse = test(data['label'].validation_mask, 2024)
-    test_mse = test(data['label'].test_mask, 2025)
+    validation_mse = test(data['label'].validation_mask, epoch)
+    test_mse = test(data['label'].test_mask, epoch)
     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
     #print(evaluate_epss_prediction(data['label'].test_mask))
 
