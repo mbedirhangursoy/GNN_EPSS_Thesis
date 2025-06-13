@@ -260,14 +260,15 @@ def plot_actual_vs_predicted(actual, predicted, title, file_prefix, epoch):
 
 def plot_mse(train, validate, test):
     plt.figure(figsize=(10, 6))
-    x1 = np.array(train)
-    y1 = np.arange(len(train))
+    x1 = np.arange(len(train))
+    y1 = np.array(train)
 
-    x2 = np.array(validate)
-    y2 = np.arange(len(validate))
-
-    x3 = np.array(test)
-    y3 = np.arange(len(test))
+    x2 = np.arange(len(validate))
+    y2 = np.array(validate)
+    
+    x3 = np.arange(len(test))
+    y3 = np.array(test)
+    
 
     plt.plot(x1, y1, label='Train')
     plt.plot(x2, y2, label='Validate')

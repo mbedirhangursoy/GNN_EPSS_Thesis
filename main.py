@@ -5,6 +5,7 @@ import torch.nn.functional as F
 import numpy as np
 import torch, csv
 from clean_data.helper_functions import *
+from gnn_final_implementation import *
 
 
 
@@ -32,7 +33,7 @@ class HeteroGNN(torch.nn.Module):
         return out
 
 
-data = torch.load('data_related/my_final_graph_updated.pt', weights_only=False)
+#data = torch.load('data_related/my_final_graph_updated.pt', weights_only=False)
 
 epss_scores = []
 with open('epss_score_2025_new.csv') as csvfile:
