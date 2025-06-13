@@ -190,12 +190,13 @@ for epoch in range(1, 101):
     validation_mse = test(data['label'].validation_mask, epoch)
     test_mse = test(data['label'].test_mask, epoch)
 
-    if float(validation_mse[0]) < lowest_mse_validation:
-        lowest_mse_validation = float(validation_mse[0])
+    print(validation_mse, type(validation_mse))
+    if float(validation_mse) < lowest_mse_validation:
+        lowest_mse_validation = float(validation_mse)
         corressponding_epoch = epoch
 
 
-    print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse[0]}, Test MSE: {test_mse:.4f}')
+    print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
     #print(evaluate_epss_prediction(data['label'].test_mask))
 
 '''accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction(data['label'].test_mask, 2024)
