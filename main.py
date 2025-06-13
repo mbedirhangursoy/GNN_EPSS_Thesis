@@ -4,7 +4,7 @@ from torch.nn import Linear
 import torch.nn.functional as F
 import numpy as np
 import torch, csv
-from data_related.helper_functions import *
+from clean_data.helper_functions import *
 
 
 
@@ -144,11 +144,11 @@ def train(epoch):
     actual = target[data['label'].train_mask]
 
 
-    if epoch == 100:
-        with open(f'train_actual_pred_output.csv', 'w') as f: #create a csv for the graph for train data
-            writer = csv.writer(f)
-            for predi, actuali in zip(pred, actual):
-                writer.writerow([actuali.item(), predi.item()])
+    
+    with open(f'all_epochs/train_actual_pred_output_{epoch}.csv', 'w') as f: #create a csv for the graph for train data
+        writer = csv.writer(f)
+        for predi, actuali in zip(pred, actual):
+            writer.writerow([actuali.item(), predi.item()])
 
         
     loss = F.mse_loss(pred, actual)
@@ -159,6 +159,7 @@ def train(epoch):
 
 def test(mask, epoch):
     model.eval()
+
     with torch.no_grad():
         out = model(data.x_dict, data.edge_index_dict).squeeze()
         pred = out[mask]
@@ -166,25 +167,34 @@ def test(mask, epoch):
         mse = F.mse_loss(pred, actual).item()
 
 
-        if epoch == 100:
-            if mask is data['label'].validation_mask:
-                with open(f'valid_actual_pred_output.csv', 'w') as f: #create a csv for the graph for validation data
-                    writer = csv.writer(f)
-                    for predi, actuali in zip(pred, actual):
-                        writer.writerow([actuali.item(), predi.item()])
-            elif mask is data['label'].test_mask:
-                with open(f'test_actual_pred_output.csv', 'w') as f: #create a csv for the graph for test data
-                    writer = csv.writer(f)
-                    for predi, actuali in zip(pred, actual):
-                        writer.writerow([actuali.item(), predi.item()])
+        
+        if mask is data['label'].validation_mask:
+            with open(f'all_epochs/valid_actual_pred_output_{epoch}.csv', 'w') as f: #create a csv for the graph for validation data
+                writer = csv.writer(f)
+                for predi, actuali in zip(pred, actual):
+                    writer.writerow([actuali.item(), predi.item()])
 
-        return mse
+        elif mask is data['label'].test_mask:
+            with open(f'all_epochs/test_actual_pred_output_{epoch}.csv', 'w') as f: #create a csv for the graph for test data
+                writer = csv.writer(f)
+                for predi, actuali in zip(pred, actual):
+                    writer.writerow([actuali.item(), predi.item()])
 
+        return mse, corressponding_epoch
+
+lowest_mse_validation = 1
+corressponding_epoch = 0
 
 for epoch in range(1, 101):
     loss = train(epoch)
     validation_mse = test(data['label'].validation_mask, epoch)
     test_mse = test(data['label'].test_mask, epoch)
+
+    if validation_mse < lowest_mse_validation:
+        lowest_mse_validation = validation_mse
+        corressponding_epoch = epoch
+
+
     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
     #print(evaluate_epss_prediction(data['label'].test_mask))
 
@@ -198,9 +208,9 @@ import matplotlib.pyplot as plt
 
 
 
-def load_csv_to_lists(filename):
+def load_csv_to_lists(filename, epoch):
     actual, predicted = [], []
-    with open(filename, 'r') as f:
+    with open(f'all_epochs/{filename}_{epoch}.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
             actual.append(float(row[0]))
@@ -240,9 +250,9 @@ def plot_actual_vs_predicted(actual, predicted, title, file_prefix):
 
 
 
-train_actual, train_pred = load_csv_to_lists('train_actual_pred_output.csv')
-val_actual, val_pred = load_csv_to_lists('valid_actual_pred_output.csv')
-test_actual, test_pred = load_csv_to_lists('test_actual_pred_output.csv')
+train_actual, train_pred = load_csv_to_lists('train_actual_pred_output')
+val_actual, val_pred = load_csv_to_lists('valid_actual_pred_output')
+test_actual, test_pred = load_csv_to_lists('test_actual_pred_output')
 
 plot_actual_vs_predicted(train_actual, train_pred, "Train Set", "train_pred_2025")
 plot_actual_vs_predicted(val_actual, val_pred, "Validation Set", "validation_pred_2025")
