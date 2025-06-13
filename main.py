@@ -42,7 +42,7 @@ with open('epss_score_2025_new.csv') as csvfile:
         epss_scores.append(float(row[1]))
 
 
-model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
+model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
 
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
@@ -50,19 +50,17 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 
 label_node_count = data['label'].num_nodes
-random_index = torch.randperm(label_node_count)
+#random_index = torch.randperm(label_node_count)
 target = torch.tensor(epss_scores, dtype=torch.float)
 
 
-
-
 train_size = int(0.7 * label_node_count)
-train_idx = random_index[:train_size]
-test_idx = random_index[train_size:]
-validation_idx = random_index
-#train_idx = torch.arange(0, train_size)
-#test_idx = torch.arange(train_size, label_node_count)
-#validation_idx = torch.arange(0, label_node_count)
+#train_idx = random_index[:train_size]
+#test_idx = random_index[train_size:]
+#validation_idx = random_index
+train_idx = torch.arange(0, train_size)
+test_idx = torch.arange(train_size, label_node_count)
+validation_idx = torch.arange(0, label_node_count)
 
 train_mask = torch.zeros(label_node_count, dtype=torch.bool)
 test_mask = torch.zeros(label_node_count, dtype=torch.bool)
