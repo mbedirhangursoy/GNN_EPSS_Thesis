@@ -45,7 +45,7 @@ with open('epss_score_2025_new.csv') as csvfile:
 model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
 
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.05)
 
 
 
