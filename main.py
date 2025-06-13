@@ -189,9 +189,9 @@ for epoch in range(1, 101):
     loss = train(epoch)
     validation_mse = test(data['label'].validation_mask, epoch)
     test_mse = test(data['label'].test_mask, epoch)
-    print(validation_mse, type(validation_mse))
-    if validation_mse < lowest_mse_validation:
-        lowest_mse_validation = validation_mse
+
+    if float(validation_mse[0]) < lowest_mse_validation:
+        lowest_mse_validation = float(validation_mse[0])
         corressponding_epoch = epoch
 
 
