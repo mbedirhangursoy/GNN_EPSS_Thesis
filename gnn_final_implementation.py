@@ -5,11 +5,10 @@ import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from clean_data.helper_functions import *
-import pandas as pd
-import matplotlib.pyplot as plt
 
 
-remove_empty_epss_scores(2024, 2025)
+
+remove_empty_epss_scores(2025, 2025)
 
 with open('h_gnn_output_final.json') as data_values:
     print('opened file and starting to create the graph')
@@ -36,24 +35,39 @@ with open('h_gnn_output_final.json') as data_values:
 
 
     for i, v in enumerate(labels): #adds the encoded attributes back to the loaded json file
-        data_values[v]["basescore"] = enc_cwe[i]
-        data_values[v]["baseseverity"] = enc_cwe[i]
-        data_values[v]["confidentialityimpact"] = enc_cwe[i]
-        data_values[v]["integrityimpact"] = enc_cwe[i]
+        data_values[v]["basescore"] = enc_basescore[i]
+        data_values[v]["baseseverity"] = enc_baseseverities[i]
+        data_values[v]["confidentialityimpact"] = enc_confidentialityimpact[i]
+        data_values[v]["integrityimpact"] = enc_integrityimpact[i]
         data_values[v]["vendor"] = enc_vendor[i]
         data_values[v]["cwe"] = enc_cwe[i]
 
 
     data = HeteroData()
+
+    label_features = []
+
+    for v in labels:
+        combined = np.concatenate([
+            data_values[v]["basescore"],
+            data_values[v]["baseseverity"],
+            data_values[v]["confidentialityimpact"],
+            data_values[v]["integrityimpact"],
+            data_values[v]["vendor"],
+            data_values[v]["cwe"]
+        ])
+        label_features.append(combined)
+
+    data['label'].x = torch.tensor(np.array(label_features), dtype=torch.float)
+
     
     num_label_nodes = len(labels) # Labeling of node features
-    data['label'].x = torch.randn(num_label_nodes, 32) 
     label_ids = {val: i for i, val in enumerate(labels)}
     data['label'].num_nodes = num_label_nodes
 
     num_attrs = len(attributes) # Attribute node features
-    data['attribute'].x = torch.randn(num_attrs, 32)
     attr_ids = {name: i for i, name in enumerate(attributes)}
+    data['attribute'].x = torch.eye(num_attrs)
 
 
     edge_index = [[], []]
@@ -90,5 +104,5 @@ with open('h_gnn_output_final.json') as data_values:
     data['label', 'to', 'attribute'].edge_attr = edge_attr
     data['attribute', 'rev_to', 'label'].edge_index = edge_index.flip(0)
 
-    torch.save(data, 'data_related/my_final_graph.pt')
+    torch.save(data, 'data_related/my_final_graph_updated.pt')
     print("Graph saved successfully.")
