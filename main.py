@@ -175,7 +175,7 @@ def test(mask, epoch):
         return mse
 
 
-for epoch in range(1, 101):
+for epoch in range(1, 31):
     loss = train(epoch)
     validation_mse = test(data['label'].validation_mask, epoch)
     test_mse = test(data['label'].test_mask, epoch)
