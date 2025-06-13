@@ -5,6 +5,9 @@ import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from clean_data.helper_functions import *
+import pandas as pd
+import matplotlib.pyplot as plt
+
 
 remove_empty_epss_scores(2024, 2025)
 

@@ -10,7 +10,8 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer as wnl
 import json, math
-
+import matplotlib.pyplot as plt
+import numpy as np
 ### Everything after here is about modifying the CVE data ###
 
 def df_converter(data): # reads the file and returns the data that is asked for
@@ -223,3 +224,80 @@ def remove_empty_epss_scores(start_year, end_year):
 
     return epss_scores, data_values
 
+
+### Everything below here is about plotting the results ###
+
+def load_csv_to_lists(filename, epoch):
+    actual, predicted = [], []
+    with open(f'all_epochs/{filename}_{epoch}.csv', 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            actual.append(float(row[0]))
+            predicted.append(float(row[1]))
+    return actual, predicted
+
+def plot_actual_vs_predicted(actual, predicted, title, file_prefix, epoch):
+    # full version
+    plt.figure(figsize=(10, 6))
+    plt.scatter(
+        actual, predicted,
+        alpha=0.8, s=60, color='dodgerblue',
+        edgecolor='black', label='Actual vs. Predicted'
+    )
+
+
+    plt.plot([0, 1], [0, 1], 'r--', lw=2, label='Perfect Prediction')
+
+    plt.xlabel("Actual Values")
+    plt.ylabel("Predicted Values")
+    plt.title(f'{title} - Full Range')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(f'{file_prefix}_{epoch}_full.png', dpi=300)
+    plt.show()
+
+
+    # zoomed
+    plt.figure(figsize=(10, 6))
+    plt.scatter(
+        actual, predicted,
+        alpha=0.8, s=60, color='dodgerblue',
+        edgecolor='black', label='Actual vs. Predicted'
+    )
+
+
+    plt.plot([0, 0.1], [0, 0.1], 'r--', label='Perfect Prediction')
+    plt.xlim(0, 0.1)
+    plt.ylim(0, 0.1)
+    plt.xlabel("Actual Values")
+    plt.ylabel("Predicted Values")
+    plt.title(f'{title} - Zoomed (0 to 0.1)')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(f'{file_prefix}_{epoch}_zoomed.png', dpi=300)
+    plt.show()
+
+
+def plot_mse(train, validate, test):
+
+    x1 = np.array(train)
+    y1 = np.arange(len(train))
+
+    x2 = np.array(validate)
+    y2 = np.arange(len(validate))
+
+    x3 = np.array(test)
+    y3 = np.arange(len(test))
+
+    plt.plot(x1, y1, label='Train')
+    plt.plot(x2, y2, label='Validate')
+    plt.plot(x3, y3, label='Test')
+    
+    plt.xlabel("Mean Squared Error")
+    plt.ylabel("Epoch Number")
+    plt.title('MSE per Epoch')
+    plt.legend()
+    plt.grid(True)
+    plt.show()

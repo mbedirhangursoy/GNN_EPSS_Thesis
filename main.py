@@ -184,11 +184,18 @@ def test(mask, epoch):
 
 lowest_mse_validation = 1
 corressponding_epoch = 0
+train_mse_list = []
+validation_mse_list = []
+test_mse_list = []
 
 for epoch in range(1, 101):
     loss = train(epoch)
     validation_mse = test(data['label'].validation_mask, epoch)
     test_mse = test(data['label'].test_mask, epoch)
+
+    train_mse_list.append(loss)
+    validation_mse_list.append(validation_mse)
+    test_mse_list.append(test_mse)
 
     print(validation_mse, type(validation_mse))
     if validation_mse < lowest_mse_validation:
@@ -199,57 +206,6 @@ for epoch in range(1, 101):
     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
     #print(evaluate_epss_prediction(data['label'].test_mask))
 
-'''accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction(data['label'].test_mask, 2024)
-print(f'Accuracy {accuracy_log}')
-print(f'Classification {classification_log}')
-print(f'Confusion Matrix {confusion_log}')'''
-
-
-import matplotlib.pyplot as plt
-
-
-
-def load_csv_to_lists(filename, epoch):
-    actual, predicted = [], []
-    with open(f'all_epochs/{filename}_{epoch}.csv', 'r') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            actual.append(float(row[0]))
-            predicted.append(float(row[1]))
-    return actual, predicted
-
-
-
-def plot_actual_vs_predicted(actual, predicted, title, file_prefix, epoch):
-    # Non-Zoomed
-    plt.figure(figsize=(10, 6))
-    plt.scatter(actual, predicted, color='blue', alpha=0.6, edgecolors='k', label='Actual vs. Predicted')
-    plt.plot([0, 1], [0, 1], 'r--', label='Perfect Prediction')
-    plt.xlabel('Actual Values')
-    plt.ylabel('Predicted Values')
-    plt.title(f'{title} - Full Range')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig(f'{file_prefix}_{epoch}_full.png', dpi=300)
-    plt.show()
-
-    # Zoomed
-    plt.figure(figsize=(10, 6))
-    plt.scatter(actual, predicted, color='blue', alpha=0.6, edgecolors='k', label='Actual vs. Predicted')
-    plt.plot([0, 0.1], [0, 0.1], 'r--', label='Perfect Prediction')
-    plt.xlim(0, 0.1)
-    plt.ylim(0, 0.1)
-    plt.xlabel('Actual Values')
-    plt.ylabel('Predicted Values')
-    plt.title(f'{title} - Zoomed (0 to 0.1)')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig(f'{file_prefix}_{epoch}_zoomed.png', dpi=300)
-    plt.show()
-
-
 
 train_actual, train_pred = load_csv_to_lists('train_actual_pred_output', corressponding_epoch)
 val_actual, val_pred = load_csv_to_lists('valid_actual_pred_output', corressponding_epoch)
@@ -259,3 +215,4 @@ plot_actual_vs_predicted(train_actual, train_pred, "Train Set", "train_pred_2025
 plot_actual_vs_predicted(val_actual, val_pred, "Validation Set", "validation_pred_2025", corressponding_epoch)
 plot_actual_vs_predicted(test_actual, test_pred, "Test Set", "test_pred_2025", corressponding_epoch)
 
+plot_mse(train_mse_list, validation_mse_list, test_mse_list)
