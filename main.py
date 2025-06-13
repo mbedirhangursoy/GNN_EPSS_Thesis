@@ -180,7 +180,7 @@ def test(mask, epoch):
                 for predi, actuali in zip(pred, actual):
                     writer.writerow([actuali.item(), predi.item()])
 
-        return mse, corressponding_epoch
+        return mse
 
 lowest_mse_validation = 1
 corressponding_epoch = 0
@@ -195,7 +195,7 @@ for epoch in range(1, 101):
         corressponding_epoch = epoch
 
 
-    print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
+    print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse[0]}, Test MSE: {test_mse:.4f}')
     #print(evaluate_epss_prediction(data['label'].test_mask))
 
 '''accuracy_log, classification_log, confusion_log = evaluate_logarithmic_multiclass_prediction(data['label'].test_mask, 2024)
