@@ -42,22 +42,26 @@ with open('epss_score_2025_deleted.csv') as csvfile:
 
 #epss_scores = get_logarithmic_epss_score('epss_score_2024_2025_deleted.csv')
 
-model = HeteroGNN(hidden_dim=128, out_dim=1, metadata=data.metadata())
+model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
 
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 
+label_node_count = data['label'].num_nodes
+random_index = torch.randperm(label_node_count)
 target = torch.tensor(epss_scores, dtype=torch.float)
 
 
-label_node_count = data['label'].num_nodes
-target = torch.tensor(epss_scores[:label_node_count], dtype=torch.float)
+
 
 train_size = int(0.7 * label_node_count)
-train_idx = torch.arange(0, train_size)
-test_idx = torch.arange(train_size, label_node_count)
-validation_idx = torch.arange(0, label_node_count)
+train_idx = random_index[:train_size]
+test_idx = random_index[train_size:]
+validation_idx = random_index
+#train_idx = torch.arange(0, train_size)
+#test_idx = torch.arange(train_size, label_node_count)
+#validation_idx = torch.arange(0, label_node_count)
 
 train_mask = torch.zeros(label_node_count, dtype=torch.bool)
 test_mask = torch.zeros(label_node_count, dtype=torch.bool)
@@ -140,7 +144,7 @@ def train(epoch):
     actual = target[data['label'].train_mask]
 
 
-    if epoch == 30:
+    if epoch == 100:
         with open(f'train_actual_pred_output.csv', 'w') as f: #create a csv for the graph for train data
             writer = csv.writer(f)
             for predi, actuali in zip(pred, actual):
@@ -162,7 +166,7 @@ def test(mask, epoch):
         mse = F.mse_loss(pred, actual).item()
 
 
-        if epoch == 30:
+        if epoch == 100:
             if mask is data['label'].validation_mask:
                 with open(f'valid_actual_pred_output.csv', 'w') as f: #create a csv for the graph for validation data
                     writer = csv.writer(f)
