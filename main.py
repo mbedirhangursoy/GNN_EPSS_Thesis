@@ -197,7 +197,6 @@ for epoch in range(1, 101):
     validation_mse_list.append(validation_mse)
     test_mse_list.append(test_mse)
 
-    print(validation_mse, type(validation_mse))
     if validation_mse < lowest_mse_validation:
         lowest_mse_validation = validation_mse
         corressponding_epoch = epoch

@@ -300,4 +300,6 @@ def plot_mse(train, validate, test):
     plt.title('MSE per Epoch')
     plt.legend()
     plt.grid(True)
+    plt.savefig(f'mse_graph', dpi=300)
+
     plt.show()
