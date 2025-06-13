@@ -45,7 +45,7 @@ with open('epss_score_2025_deleted.csv') as csvfile:
 model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
 
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
 
 
 target = torch.tensor(epss_scores, dtype=torch.float)
@@ -181,7 +181,7 @@ def test(mask, epoch):
         return mse
 
 
-for epoch in range(1, 31):
+for epoch in range(1, 101):
     loss = train(epoch)
     validation_mse = test(data['label'].validation_mask, epoch)
     test_mse = test(data['label'].test_mask, epoch)
