@@ -42,10 +42,10 @@ with open('epss_score_2025_new.csv') as csvfile:
         epss_scores.append(float(row[1]))
 
 
-model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
+model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
 
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
 
 
 
