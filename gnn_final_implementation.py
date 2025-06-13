@@ -8,7 +8,7 @@ from clean_data.helper_functions import *
 
 
 
-remove_empty_epss_scores(2025, 2025)
+#remove_empty_epss_scores(2025, 2025)
 
 with open('h_gnn_output_final.json') as data_values:
     print('opened file and starting to create the graph')
