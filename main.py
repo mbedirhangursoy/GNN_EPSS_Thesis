@@ -34,11 +34,31 @@ class HeteroGNN(torch.nn.Module):
 
 data = torch.load('data_related/my_graph.pt', weights_only=False)
 
+from sklearn.preprocessing import StandardScaler # detele this part of the code where it is normalising it if it is not necessary.
+
+for node_type in data.x_dict:
+    features = data[node_type].x
+    scaler = StandardScaler()
+    normalized_features = scaler.fit_transform(features.numpy())
+    data[node_type].x = torch.tensor(normalized_features, dtype=torch.float)
+
+from sklearn.preprocessing import MinMaxScaler
+
+# Load raw EPSS scores
 epss_scores = []
 with open('epss_score_2025_deleted.csv') as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     for row in readCSV:
         epss_scores.append(float(row[1]))
+
+# Truncate scores to match the number of label nodes
+label_node_count = data['label'].num_nodes
+epss_scores = np.array(epss_scores[:label_node_count]).reshape(-1, 1)
+
+# Normalize target values
+target_scaler = MinMaxScaler()
+normalized_epss = target_scaler.fit_transform(epss_scores).squeeze()
+target = torch.tensor(normalized_epss, dtype=torch.float)
 
 #epss_scores = get_logarithmic_epss_score('epss_score_2024_2025_deleted.csv')
 
@@ -48,11 +68,11 @@ model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 
-target = torch.tensor(epss_scores, dtype=torch.float)
+#target = torch.tensor(epss_scores, dtype=torch.float)
 
 
-label_node_count = data['label'].num_nodes
-target = torch.tensor(epss_scores[:label_node_count], dtype=torch.float)
+#label_node_count = data['label'].num_nodes
+#target = torch.tensor(epss_scores[:label_node_count], dtype=torch.float)
 
 train_size = int(0.7 * label_node_count)
 train_idx = torch.arange(0, train_size)
