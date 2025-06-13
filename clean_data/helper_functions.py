@@ -161,28 +161,6 @@ def get_epss_scores(cve_ids: list[str]): #gets_all_scores
 
     return epss_scores_list
 
-'''def get_logarithmic_epss_score(file):
-    epss_scores = []
-    with open(file) as final_epss_file:
-        readCSV = csv.reader(final_epss_file, delimiter=',')
-    
-        for row in readCSV:
-            epss_score = float(row[1])
-            if epss_score < 0.1:
-                epss_score = round(math.log(epss_score), 1)
-            else:
-                epss_score = round(epss_score*10, 1)
-
-            epss_scores.append(epss_score)
-
-    return epss_scores
-
-def create_classes(value): #for logarithmic score tracking
-    classes = [-float('inf'), -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, float('inf')]
-    labels = list(range(len(classes) - 1))
-    bins = pd.cut([value], bins=classes, labels=labels)[0]
-
-    return bins'''
           
 
 ### Removes from both EPSS list and CVE dictionary ###
@@ -213,12 +191,12 @@ def remove_empty_epss_scores(start_year, end_year):
 
     print(len(data_values))
 
-    with open("epss_score_final.csv", "w", newline="") as f:
+    with open("epss_score_2025_new.csv", "w", newline="") as f:
         writer = csv.writer(f)
         for score, (key, _) in zip(epss_scores, data_values.items()):
             writer.writerow([key, score])
 
-    with open("h_gnn_output_final.json", "w") as outfile:
+    with open("h_gnn_output_2025_new.json", "w") as outfile:
         json.dump(data_values, outfile)
 
 
