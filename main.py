@@ -45,7 +45,7 @@ with open('epss_score_2025_deleted.csv') as csvfile:
 model = HeteroGNN(hidden_dim=32, out_dim=1, metadata=data.metadata())
 
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
 
 
 label_node_count = data['label'].num_nodes
