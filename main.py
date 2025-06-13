@@ -251,9 +251,9 @@ def plot_actual_vs_predicted(actual, predicted, title, file_prefix):
 
 
 
-train_actual, train_pred = load_csv_to_lists('train_actual_pred_output')
-val_actual, val_pred = load_csv_to_lists('valid_actual_pred_output')
-test_actual, test_pred = load_csv_to_lists('test_actual_pred_output')
+train_actual, train_pred = load_csv_to_lists('train_actual_pred_output', corressponding_epoch)
+val_actual, val_pred = load_csv_to_lists('valid_actual_pred_output', corressponding_epoch)
+test_actual, test_pred = load_csv_to_lists('test_actual_pred_output', corressponding_epoch)
 
 plot_actual_vs_predicted(train_actual, train_pred, "Train Set", "train_pred_2025")
 plot_actual_vs_predicted(val_actual, val_pred, "Validation Set", "validation_pred_2025")
