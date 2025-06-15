@@ -20,22 +20,20 @@ class HeteroGNN(torch.nn.Module):
             ('attribute', 'rev_to', 'label'): GATConv((-1, -1), hidden_dim, add_self_loops=False)
         }, aggr='sum')
         
-        self.dropout = nn.Dropout(p=0.3)
-        self.lin1 = Linear(hidden_dim, hidden_dim // 2)
-        self.lin2 = Linear(hidden_dim // 2, out_dim)
+        self.lin1 = Linear(hidden_dim, hidden_dim)
+        self.lin2 = Linear(hidden_dim, hidden_dim // 2)
+        self.lin3 = Linear(hidden_dim // 2, out_dim)
+        self.dropout = nn.Dropout(0.3)
         self.metadata = metadata
 
     def forward(self, x_dict, edge_index_dict):
         x_dict = self.conv1(x_dict, edge_index_dict)
         x_dict = {key: F.relu(x) for key, x in x_dict.items()}
 
-        x = x_dict['label']
-
-        x = self.lin1(x)
-        x = F.relu(x)
+        x = F.relu(self.lin1(x_dict['label']))
         x = self.dropout(x)
-
-        out = self.lin2(x)
+        x = F.relu(self.lin2(x))
+        out = torch.sigmoid(self.lin3(x))
         return out
 
 
