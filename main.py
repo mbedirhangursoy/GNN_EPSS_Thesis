@@ -5,6 +5,7 @@ import torch.nn.functional as F
 import numpy as np
 import torch, csv
 from clean_data.helper_functions import *
+import torch.nn as nn
 
 
 
@@ -18,14 +19,15 @@ class HeteroGNN(torch.nn.Module):
             ('label', 'to', 'attribute'): GATConv((-1, -1), hidden_dim, add_self_loops=False),
             ('attribute', 'rev_to', 'label'): GATConv((-1, -1), hidden_dim, add_self_loops=False)
         }, aggr='sum')
-
+        
+        self.dropout = nn.Dropout(p=0.3)
         self.lin = Linear(hidden_dim, out_dim)
         self.metadata = metadata
 
     def forward(self, x_dict, edge_index_dict):
         x_dict = self.conv1(x_dict, edge_index_dict)
-
-        x_dict = {key: F.relu(x) for key, x in x_dict.items()}
+        
+        x_dict = {key: self.dropout(F.relu(x)) for key, x in x_dict.items()}
 
         out = self.lin(x_dict['label'])
         return out
@@ -49,7 +51,7 @@ normalized_epss = (epss_array - mean) / std
 model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
 
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
 
 
@@ -154,9 +156,7 @@ def train(epoch):
             writer.writerow([actuali.item(), predi.item()])
 
     
-    #loss = F.mse_loss(pred, actual)
-    weights = 1 + 1000 * actual
-    loss = torch.mean(weights * (pred - actual) ** 2)
+    loss = F.mse_loss(pred, actual)
 
     loss.backward()
     optimizer.step()
