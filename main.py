@@ -32,7 +32,7 @@ class HeteroGNN(torch.nn.Module):
         return out
 
 
-data = torch.load('data_related/my_final_graph_updated.pt', weights_only=False)
+data = torch.load('data_related/my_graph.pt', weights_only=False)
 
 epss_scores = []
 with open('epss_score_2025_deleted.csv') as csvfile:
@@ -150,8 +150,10 @@ def train(epoch):
 
         
     #loss = F.mse_loss(pred, actual)
-    weights = 1 + 50 * actual
-    loss = torch.mean(weights * (pred - actual) ** 2)
+    pred_log = torch.log1p(pred)
+    actual_log = torch.log1p(actual)
+    weights = 1 + 10 * actual_log
+    loss = torch.mean(weights * (pred_log - actual_log) ** 2)
 
     loss.backward()
     optimizer.step()
