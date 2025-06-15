@@ -153,8 +153,6 @@ def train(epoch):
     out = model(data.x_dict, data.edge_index_dict).squeeze()
     pred = out[data['label'].train_mask]
     actual = target[data['label'].train_mask]
-
-    print(pred, actual)
     
     with open(f'all_epochs/train_actual_pred_output_{epoch}.csv', 'w') as f: #create a csv for the graph for train data
         writer = csv.writer(f)
@@ -187,6 +185,8 @@ def test(mask, epoch):
                     writer.writerow([actuali.item(), predi.item()])
 
         elif mask is data['label'].test_mask:
+            for eachpred, eachactual in zip(pred, actual):
+                print(eachpred.item(), eachactual.item())
             with open(f'all_epochs/test_actual_pred_output_{epoch}.csv', 'w') as f: #create a csv for the graph for test data
                 writer = csv.writer(f)
                 for predi, actuali in zip(pred, actual):
