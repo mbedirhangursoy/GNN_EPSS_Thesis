@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import numpy as np
 import torch, csv
 from clean_data.helper_functions import *
-from gnn_final_implementation import *
+
 
 
 
@@ -31,7 +31,7 @@ class HeteroGNN(torch.nn.Module):
         return out
 
 
-#data = torch.load('data_related/my_final_graph_updated.pt', weights_only=False)
+data = torch.load('data_related/my_final_graph_updated.pt', weights_only=False)
 
 epss_scores = []
 with open('epss_score_2025_new.csv') as csvfile:
@@ -146,7 +146,7 @@ def train(epoch):
     pred = out[data['label'].train_mask]
     actual = target[data['label'].train_mask]
 
-
+    print(pred, actual)
     
     with open(f'all_epochs/train_actual_pred_output_{epoch}.csv', 'w') as f: #create a csv for the graph for train data
         writer = csv.writer(f)
@@ -162,7 +162,7 @@ def train(epoch):
     return loss.item()
 
 def test(mask, epoch):
-    model.eval()
+    model.train()
 
     with torch.no_grad():
         out = model(data.x_dict, data.edge_index_dict).squeeze()
