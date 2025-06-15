@@ -149,7 +149,10 @@ def train(epoch):
             writer.writerow([actuali.item(), predi.item()])
 
         
-    loss = F.mse_loss(pred, actual)
+    #loss = F.mse_loss(pred, actual)
+    weights = 1 + 10 * actual 
+    loss = torch.mean(weights * (pred - actual) ** 2)
+
     loss.backward()
     optimizer.step()
 
