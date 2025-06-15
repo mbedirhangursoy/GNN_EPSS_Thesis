@@ -46,10 +46,8 @@ with open('epss_score_2025_deleted.csv') as csvfile:
         epss_scores.append(float(row[1]))
 
 ### Normalising EPSS Scores
-epss_array = np.array(epss_scores, dtype=np.float32) 
-mean = epss_array.mean()
-std = epss_array.std()
-normalized_epss = (epss_array - mean) / std
+epss_array = np.array(epss_scores, dtype=np.float32)
+normalized_epss = (epss_array - epss_array.min()) / (epss_array.max() - epss_array.min())
 ### Normalising EPSS Scores
 
 model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
@@ -61,7 +59,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
 label_node_count = data['label'].num_nodes
 #random_index = torch.randperm(label_node_count)
-target = torch.tensor(epss_scores, dtype=torch.float)
+target = torch.tensor(normalized_epss, dtype=torch.float)
 
 
 train_size = int(0.7 * label_node_count)
