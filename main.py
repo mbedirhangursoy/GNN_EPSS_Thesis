@@ -32,8 +32,8 @@ class HeteroGNN(torch.nn.Module):
 
         x = F.relu(self.lin1(x_dict['label']))
         x = self.dropout(x)
-        x = F.relu(self.lin2(x))
-        out = self.lin3(x)
+        out = F.relu(self.lin2(x))
+        #out = self.lin3(x)
         return out
 
 
