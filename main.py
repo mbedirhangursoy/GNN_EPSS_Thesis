@@ -21,15 +21,21 @@ class HeteroGNN(torch.nn.Module):
         }, aggr='sum')
         
         self.dropout = nn.Dropout(p=0.3)
-        self.lin = Linear(hidden_dim, out_dim)
+        self.lin1 = Linear(hidden_dim, hidden_dim // 2)
+        self.lin2 = Linear(hidden_dim // 2, out_dim)
         self.metadata = metadata
 
     def forward(self, x_dict, edge_index_dict):
         x_dict = self.conv1(x_dict, edge_index_dict)
-        
-        x_dict = {key: self.dropout(F.relu(x)) for key, x in x_dict.items()}
+        x_dict = {key: F.relu(x) for key, x in x_dict.items()}
 
-        out = self.lin(x_dict['label'])
+        x = x_dict['label']
+
+        x = self.lin1(x)
+        x = F.relu(x)
+        x = self.dropout(x)
+
+        out = self.lin2(x)
         return out
 
 
