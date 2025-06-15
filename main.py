@@ -55,7 +55,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 label_node_count = data['label'].num_nodes
 #random_index = torch.randperm(label_node_count)
-target = torch.tensor(epss_scores, dtype=torch.float)
+target = torch.tensor(normalized_epss, dtype=torch.float)
 
 
 train_size = int(0.7 * label_node_count)
@@ -154,7 +154,9 @@ def train(epoch):
             writer.writerow([actuali.item(), predi.item()])
 
     
-    loss = F.mse_loss(pred, actual)
+    #loss = F.mse_loss(pred, actual)
+    weights = 1 + 1000 * actual
+    loss = torch.mean(weights * (pred - actual) ** 2)
 
     loss.backward()
     optimizer.step()
