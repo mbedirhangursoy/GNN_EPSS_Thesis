@@ -55,7 +55,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 label_node_count = data['label'].num_nodes
 #random_index = torch.randperm(label_node_count)
-target = torch.tensor(normalized_epss, dtype=torch.float)
+target = torch.tensor(epss_scores, dtype=torch.float)
 
 
 train_size = int(0.7 * label_node_count)
