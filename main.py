@@ -40,6 +40,12 @@ with open('epss_score_2025_deleted.csv') as csvfile:
     for row in readCSV:
         epss_scores.append(float(row[1]))
 
+### Normalising EPSS Scores
+epss_array = np.array(epss_scores, dtype=np.float32) 
+mean = epss_array.mean()
+std = epss_array.std()
+normalized_epss = (epss_array - mean) / std
+### Normalising EPSS Scores
 
 model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
 
@@ -148,12 +154,8 @@ def train(epoch):
         for predi, actuali in zip(pred, actual):
             writer.writerow([actuali.item(), predi.item()])
 
-        
-    #loss = F.mse_loss(pred, actual)
-    pred_log = torch.log1p(pred)
-    actual_log = torch.log1p(actual)
-    weights = 1 + 10 * actual_log
-    loss = torch.mean(weights * (pred_log - actual_log) ** 2)
+    
+    loss = F.mse_loss(pred, actual)
 
     loss.backward()
     optimizer.step()
