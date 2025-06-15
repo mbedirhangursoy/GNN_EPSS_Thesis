@@ -20,20 +20,23 @@ class HeteroGNN(torch.nn.Module):
             ('attribute', 'rev_to', 'label'): GATConv((-1, -1), hidden_dim, add_self_loops=False)
         }, aggr='sum')
         
-        self.lin1 = Linear(hidden_dim, hidden_dim)
-        self.lin2 = Linear(hidden_dim, hidden_dim // 2)
-        self.lin3 = Linear(hidden_dim // 2, out_dim)
-        self.dropout = nn.Dropout(0.3)
+        self.dropout = nn.Dropout(p=0.1)
+        self.lin1 = Linear(hidden_dim, hidden_dim // 2)
+        self.lin2 = Linear(hidden_dim // 2, out_dim)
         self.metadata = metadata
 
     def forward(self, x_dict, edge_index_dict):
         x_dict = self.conv1(x_dict, edge_index_dict)
         x_dict = {key: F.relu(x) for key, x in x_dict.items()}
 
-        x = F.relu(self.lin1(x_dict['label']))
+        x = x_dict['label']
+
+        x = self.lin1(x)
+        x = F.relu(x)
         x = self.dropout(x)
-        out = F.relu(self.lin2(x))
-        #out = self.lin3(x)
+
+        out = self.lin2(x)
+        out = torch.sigmoid(out)
         return out
 
 
@@ -46,8 +49,10 @@ with open('epss_score_2025_deleted.csv') as csvfile:
         epss_scores.append(float(row[1]))
 
 ### Normalising EPSS Scores
-epss_array = np.array(epss_scores, dtype=np.float32)
-normalized_epss = (epss_array - epss_array.min()) / (epss_array.max() - epss_array.min())
+epss_array = np.array(epss_scores, dtype=np.float32) 
+mean = epss_array.mean()
+std = epss_array.std()
+normalized_epss = (epss_array - mean) / std
 ### Normalising EPSS Scores
 
 model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
@@ -59,7 +64,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
 label_node_count = data['label'].num_nodes
 #random_index = torch.randperm(label_node_count)
-target = torch.tensor(normalized_epss, dtype=torch.float)
+target = torch.tensor(epss_scores, dtype=torch.float)
 
 
 train_size = int(0.7 * label_node_count)
