@@ -191,7 +191,7 @@ for epoch in range(1, 101):
 
 
     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Validation MSE: {validation_mse:.4f}, Test MSE: {test_mse:.4f}')
-    #print(evaluate_epss_prediction(data['label'].test_mask))
+    print(evaluate_epss_prediction(data['label'].test_mask), epoch)
 
 
 train_actual, train_pred = load_csv_to_lists('train_actual_pred_output', corressponding_epoch)
