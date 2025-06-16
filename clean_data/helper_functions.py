@@ -274,8 +274,8 @@ def plot_mse(train, validate, test):
     plt.plot(x2, y2, label='Validate')
     plt.plot(x3, y3, label='Test')
     
-    plt.xlabel("Mean Squared Error")
-    plt.ylabel("Epoch Number")
+    plt.xlabel("Epoch Number")
+    plt.ylabel("Mean Squared Error")
     plt.title('MSE per Epoch')
     plt.legend()
     plt.grid(True)
