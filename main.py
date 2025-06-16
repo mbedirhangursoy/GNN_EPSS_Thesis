@@ -36,13 +36,14 @@ class HeteroGNN(torch.nn.Module):
         x = self.dropout(x)
 
         out = self.lin2(x)
+        out = self.dropout(out)
         return out
 
 
-data = torch.load('data_related/my_final_graph_updated.pt', weights_only=False)
+data = torch.load('data_related/my_graph.pt', weights_only=False)
 
 epss_scores = []
-with open('epss_score_2025_new.csv') as csvfile:
+with open('epss_score_2025_deleted.csv') as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     for row in readCSV:
         epss_scores.append(float(row[1]))
@@ -89,30 +90,6 @@ data['label'].validation_mask = validation_mask
 
 
 
-def evaluate_logarithmic_multiclass_prediction(mask, start_year):
-    model.eval()
-    out = model(data.x_dict, data.edge_index_dict).squeeze()
-    pred = out[mask]
-    actual = target[mask]
-
-    actual_classes = []
-    pred_classes = []
-
-    for t, o in zip(actual, pred):
-        actual_classes.append(t.item())
-        pred_classes.append(o.item())
-            
-    with open(f'logarithmic_actual_pred_output_{start_year}.csv', 'w') as f: #create a csv for the graph
-        writer = csv.writer(f)
-        for actual, pred in zip(actual_classes, pred_classes):
-            writer.writerow([actual, pred])
-
-
-    #accuracy = accuracy_score(actual_classes, pred_classes)
-    #classification = classification_report(actual_classes, pred_classes)
-    #confusion_matrix_ = confusion_matrix(actual_classes, pred_classes)
-
-    #return accuracy, classification, confusion_matrix_
 
 def evaluate_epss_prediction(mask):
     model.eval()
