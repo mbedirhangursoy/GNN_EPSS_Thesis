@@ -54,7 +54,7 @@ std = epss_array.std()
 normalized_epss = (epss_array - mean) / std
 ### Normalising EPSS Scores
 
-model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
+model = HeteroGNN(hidden_dim=512, out_dim=1, metadata=data.metadata())
 
 
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
@@ -67,24 +67,26 @@ target = torch.tensor(epss_scores, dtype=torch.float)
 
 
 train_size = int(0.7 * label_node_count)
+validation_size = int(0.9 * label_node_count)
 #train_idx = random_index[:train_size]
 #test_idx = random_index[train_size:]
 #validation_idx = random_index
 train_idx = torch.arange(0, train_size)
-test_idx = torch.arange(train_size, label_node_count)
-validation_idx = torch.arange(0, label_node_count)
+validation_idx = torch.arange(0, validation_size)
+test_idx = torch.arange(validation_size, label_node_count)
+
 
 train_mask = torch.zeros(label_node_count, dtype=torch.bool)
-test_mask = torch.zeros(label_node_count, dtype=torch.bool)
 validation_mask = torch.zeros(label_node_count, dtype=torch.bool)
+test_mask = torch.zeros(label_node_count, dtype=torch.bool)
 
 train_mask[train_idx] = True
-test_mask[test_idx] = True
 validation_mask[validation_idx] = True
+test_mask[test_idx] = True
 
 data['label'].train_mask = train_mask
-data['label'].test_mask = test_mask
 data['label'].validation_mask = validation_mask
+data['label'].test_mask = test_mask
 
 
 
