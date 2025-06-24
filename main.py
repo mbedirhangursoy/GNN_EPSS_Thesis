@@ -33,7 +33,7 @@ class HeteroGNN(torch.nn.Module):
 
         x = self.lin1(x)
         x = F.relu(x)
-        x = self.dropout(x)
+        #x = self.dropout(x)
 
         out = self.lin2(x)
         return out
@@ -54,10 +54,10 @@ std = epss_array.std()
 normalized_epss = (epss_array - mean) / std
 ### Normalising EPSS Scores
 
-model = HeteroGNN(hidden_dim=512, out_dim=1, metadata=data.metadata())
+model = HeteroGNN(hidden_dim=64, out_dim=1, metadata=data.metadata())
 
 
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 
 
